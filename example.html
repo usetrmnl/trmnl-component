@@ -107,6 +107,27 @@
                                 >
                                     setSrc()
                                 </button>
+                                <button
+                                    type="button"
+                                    class="rounded bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    onclick="document.getElementById('trmnl-1').setDark('true');"
+                                >
+                                    setDark('dark')
+                                </button>
+                                <button
+                                    type="button"
+                                    class="rounded bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    onclick="document.getElementById('trmnl-1').setDark('false');"
+                                >
+                                    setDark('false')
+                                </button>
+                                <button
+                                    type="button"
+                                    class="rounded bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    onclick="document.getElementById('trmnl-1').setDark('auto');"
+                                >
+                                    setDark('auto')
+                                </button>
                             </div>
 
                             <!-- Color dropdown selector -->
@@ -260,7 +281,18 @@
                                                 class="font-mono text-indigo-600"
                                                 >color</span
                                             >
-                                            - Color theme (white, black, mint)
+                                            - Color theme (<code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >white</code
+                                            >,
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >black</code
+                                            >,
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >mint</code
+                                            >)
                                         </li>
                                         <li>
                                             <span
@@ -277,6 +309,26 @@
                                             >
                                             - Inline styles to apply to the
                                             component
+                                        </li>
+                                        <li>
+                                            <span
+                                                class="font-mono text-indigo-600"
+                                                >dark</span
+                                            >
+                                            - Dark mode support (invert the
+                                            screen colors). Options:
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >true</code
+                                            >,
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >false</code
+                                            >,
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >auto</code
+                                            >
                                         </li>
                                     </ul>
                                 </dd>
@@ -321,6 +373,46 @@
                                             >
                                             - Gets the current HTML content
                                         </li>
+                                        <li>
+                                            <span
+                                                class="font-mono text-indigo-600"
+                                                >setDark(mode)</span
+                                            >
+                                            - Sets the dark mode of the iframe
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >true</code
+                                            >,
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >false</code
+                                            >
+                                            or
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >auto</code
+                                            >
+                                        </li>
+                                        <li>
+                                            <span
+                                                class="font-mono text-indigo-600"
+                                                >setColor(color)</span
+                                            >
+                                            - Sets the color of the TRMNL
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >white</code
+                                            >,
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >black</code
+                                            >
+                                            or
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >mint</code
+                                            >
+                                        </li>
                                     </ul>
                                 </dd>
                             </div>
@@ -355,7 +447,7 @@
                     <div class="p-4">
                         <pre
                             class="bg-gray-800 text-white p-3 rounded-md overflow-x-auto text-sm"
-                        ><code>&lt;trmnl-frame color="mint"&gt;
+                        ><code>&lt;trmnl-frame color="mint" dark="true"&gt;
   &lt;div class="screen"&gt;
     &lt;div class="view"&gt;
       &lt;h1&gt;My Custom Content&lt;/h1&gt;
@@ -382,6 +474,28 @@ terminal.setHTML('&lt;div&gt;Dynamic content&lt;/div&gt;');
 
 // Change source
 terminal.setSrc('https://example.com/new-content.html');
+
+// Set the dark mode to 'dark'
+terminal.setDark('true');
+
+// Set the dark mode to 'light'
+terminal.setDark('false');
+
+// Set the dark mode to 'auto'
+terminal.setDark('auto');
+
+// Set the color TRMNL to 'white'
+terminal.setColor('white');
+
+// Set the color TRMNL to 'black'
+terminal.setColor('black');
+
+// Set the color TRMNL to 'mint'
+terminal.setColor('mint');
+
+
+// Clear content
+terminal.clearContent();
 
 // Clear content
 terminal.clearContent();
