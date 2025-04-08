@@ -2,6 +2,8 @@
 
 A customizable terminal-style display component for modern web applications.
 
+[Live demo here!](https://usetrmnl.github.io/trmnl-component/example.html)
+
 ## Overview
 
 TRMNL is a versatile custom web component that provides a stylish terminal-like frame for displaying content. It supports both iframe sources and direct HTML content with multiple styling options.
@@ -121,7 +123,7 @@ TRMNL uses modern web technologies including Custom Elements and Shadow DOM. It 
 
 ## Examples
 
-You can find more examples in the `examples` directory of this repository.
+You can find more examples in the [examples.html](https://usetrmnl.github.io/trmnl-component/example.html) file within this repository.
 
 ## License
 
