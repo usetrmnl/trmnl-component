@@ -52,20 +52,18 @@
                     <div class="bg-white shadow-lg rounded-xl p-6 w-full">
                         <div class="flex justify-center mb-8">
                             <trmnl-frame id="trmnl-1" color="white">
-                                <div class="screen screen--no-bleed">
+                                <div class="screen">
                                     <div class="view view--full">
                                         <div class="layout">
-                                            <div class="p-6 text-center">
-                                                <h3
-                                                    class="text-2xl font-bold mb-4"
-                                                >
-                                                    Hello TRMNL!
-                                                </h3>
-                                                <p class="text-lg">
-                                                    This is content placed
-                                                    between the component tags.
-                                                </p>
-                                            </div>
+                                            <span class="value value--xxlarge"
+                                                >Hello TRMNL!</span
+                                            >
+                                        </div>
+
+                                        <div class="title_bar">
+                                            <span class="title"
+                                                >TRMNL Web Component</span
+                                            >
                                         </div>
                                     </div>
                                 </div>
@@ -81,49 +79,49 @@
                             >
                                 <button
                                     type="button"
-                                    class="rounded bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                                    onclick="document.getElementById('trmnl-1').setHTML('<div class=\'p-6 text-center\'><h3 class=\'text-2xl font-bold mb-4\'>Updated Content</h3><p class=\'text-lg\'>This content was set using the setHTML() method.</p></div>');"
+                                    class="rounded bg-white px-3 py-2 text-xs font-medium text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    onclick="document.getElementById('trmnl-1').setHTML(document.getElementById('shopify-metrics').innerHTML);"
                                 >
                                     setHTML()
                                 </button>
                                 <button
                                     type="button"
-                                    class="rounded bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    class="rounded bg-white px-3 py-2 text-xs font-medium text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                                     onclick="alert(document.getElementById('trmnl-1').getHTML());"
                                 >
                                     getHTML()
                                 </button>
                                 <button
                                     type="button"
-                                    class="rounded bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    class="rounded bg-white px-3 py-2 text-xs font-medium text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                                     onclick="document.getElementById('trmnl-1').clearContent();"
                                 >
                                     clearContent()
                                 </button>
                                 <button
                                     type="button"
-                                    class="rounded bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    class="rounded bg-white px-3 py-2 text-xs font-medium text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                                     onclick="document.getElementById('trmnl-1').setSrc('https://usetrmnl.com/component-default.html');"
                                 >
                                     setSrc()
                                 </button>
                                 <button
                                     type="button"
-                                    class="rounded bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    class="rounded bg-white px-3 py-2 text-xs font-medium text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                                     onclick="document.getElementById('trmnl-1').setDark('true');"
                                 >
                                     setDark('dark')
                                 </button>
                                 <button
                                     type="button"
-                                    class="rounded bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    class="rounded bg-white px-3 py-2 text-xs font-medium text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                                     onclick="document.getElementById('trmnl-1').setDark('false');"
                                 >
                                     setDark('false')
                                 </button>
                                 <button
                                     type="button"
-                                    class="rounded bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    class="rounded bg-white px-3 py-2 text-xs font-medium text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                                     onclick="document.getElementById('trmnl-1').setDark('auto');"
                                 >
                                     setDark('auto')
@@ -513,5 +511,231 @@ const content = terminal.getHTML();</code></pre>
                 </p>
             </div>
         </div>
+
+        <template id="shopify-metrics">
+            <div class="view view--full pl--2">
+                <div class="layout layout--col gap--large">
+                    <div class="grid grid--cols-3 gap">
+                        <div class="item">
+                            <div class="meta"></div>
+                            <div class="content">
+                                <span
+                                    class="value value--medium value--tnums"
+                                    data-value-format="true"
+                                    >$4,287</span
+                                >
+                                <span class="label">Today's Sales</span>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="meta"></div>
+                            <div class="content">
+                                <span
+                                    class="value value--medium value--tnums"
+                                    data-value-format="true"
+                                    >42</span
+                                >
+                                <span class="label">Orders</span>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="meta"></div>
+                            <div class="content">
+                                <span
+                                    class="value value--medium value--tnums"
+                                    data-value-format="true"
+                                    >$102.07</span
+                                >
+                                <span class="label">Avg Order Value</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Orders & Conversion Section -->
+                    <div class="border--h-3 w--full"></div>
+                    <div class="grid grid--cols-2 gap">
+                        <!-- Left Column: Orders -->
+                        <div class="col">
+                            <span class="title title--small mb--4"
+                                >Recent Orders</span
+                            >
+                            <div
+                                class="flex flex--col gap--small"
+                                data-list-limit="true"
+                                data-list-max-height="180"
+                                data-list-hidden-count="true"
+                            >
+                                <div class="item">
+                                    <div class="meta">
+                                        <span class="index">1</span>
+                                    </div>
+                                    <div class="content">
+                                        <span class="description"
+                                            >Order #10428</span
+                                        >
+                                        <div class="flex gap--small">
+                                            <span
+                                                class="label label--small label--underline"
+                                                >$127.95</span
+                                            >
+                                            <span class="label label--small"
+                                                >Processing</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="meta">
+                                        <span class="index">2</span>
+                                    </div>
+                                    <div class="content">
+                                        <span class="description"
+                                            >Order #10427</span
+                                        >
+                                        <div class="flex gap--small">
+                                            <span
+                                                class="label label--small label--underline"
+                                                >$83.50</span
+                                            >
+                                            <span class="label label--small"
+                                                >Shipped</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="meta">
+                                        <span class="index">3</span>
+                                    </div>
+                                    <div class="content">
+                                        <span class="description"
+                                            >Order #10426</span
+                                        >
+                                        <div class="flex gap--small">
+                                            <span
+                                                class="label label--small label--underline"
+                                                >$204.25</span
+                                            >
+                                            <span class="label label--small"
+                                                >Processing</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="meta">
+                                        <span class="index">4</span>
+                                    </div>
+                                    <div class="content">
+                                        <span class="description"
+                                            >Order #10425</span
+                                        >
+                                        <div class="flex gap--small">
+                                            <span
+                                                class="label label--small label--underline"
+                                                >$56.20</span
+                                            >
+                                            <span class="label label--small"
+                                                >Delivered</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="meta">
+                                        <span class="index">5</span>
+                                    </div>
+                                    <div class="content">
+                                        <span class="description"
+                                            >Order #10424</span
+                                        >
+                                        <div class="flex gap--small">
+                                            <span
+                                                class="label label--small label--underline"
+                                                >$118.75</span
+                                            >
+                                            <span class="label label--small"
+                                                >Shipped</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Conversion Metrics -->
+                        <div class="col">
+                            <span class="title title--small mb--4"
+                                >Conversion Metrics</span
+                            >
+                            <div class="flex flex--col gap">
+                                <div class="item">
+                                    <div class="meta"></div>
+                                    <div class="content">
+                                        <span class="label"
+                                            >Conversion Rate</span
+                                        >
+                                        <div class="flex gap--small">
+                                            <span
+                                                class="value value--medium value--tnums"
+                                                >4.2%</span
+                                            >
+                                            <span
+                                                class="label label--small label--outline"
+                                                >+0.5%</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="meta"></div>
+                                    <div class="content">
+                                        <span class="label">Add to Cart</span>
+                                        <div class="flex gap--small">
+                                            <span
+                                                class="value value--medium value--tnums"
+                                                >12.8%</span
+                                            >
+                                            <span
+                                                class="label label--small label--outline"
+                                                >+1.2%</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="meta"></div>
+                                    <div class="content">
+                                        <span class="label"
+                                            >Cart Abandonment</span
+                                        >
+                                        <div class="flex gap--small">
+                                            <span
+                                                class="value value--medium value--tnums"
+                                                >68.3%</span
+                                            >
+                                            <span
+                                                class="label label--small label--outline"
+                                                >-2.1%</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Title Bar -->
+                <div class="title_bar">
+                    <img
+                        class="image"
+                        src="https://usetrmnl.com/images/plugins/simple-analytics--render.svg"
+                    />
+                    <span class="title">Shopify Metrics</span>
+                    <span class="instance">Your Store Name</span>
+                </div>
+            </div>
+        </template>
     </body>
 </html>
