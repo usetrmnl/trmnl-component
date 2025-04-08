@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>TRMNL Component Demo</title>
+        <script
+            src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.7.0/dist/alpine.min.js"
+            defer
+        ></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="./trmnl-component.js" defer></script>
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            sans: ["Inter var", "sans-serif"],
+                        },
+                        colors: {
+                            "trmnl-black": "#313131",
+                            "trmnl-mint": "#D8DCD1",
+                            "trmnl-white": "#F7F6F6",
+                        },
+                    },
+                },
+            };
+        </script>
+    </head>
+    <body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+            <!-- Header -->
+            <div class="text-center mb-16">
+                <h1
+                    class="text-4xl font-extrabold text-gray-900 tracking-tight sm:text-5xl"
+                >
+                    TRMNL Component Demo
+                </h1>
+                <p class="mt-3 max-w-2xl mx-auto text-xl text-gray-500 sm:mt-4">
+                    Interactive demonstration of the TRMNL custom web component
+                </p>
+            </div>
+
+            <!-- Main content -->
+            <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
+                <!-- First component demo with controls -->
+                <div class="flex flex-col space-y-6 items-center">
+                    <h2 class="text-2xl font-bold text-gray-900 self-start">
+                        Interactive Demo
+                    </h2>
+                    <div class="bg-white shadow-lg rounded-xl p-6 w-full">
+                        <div class="flex justify-center mb-8">
+                            <trmnl-frame id="trmnl-1" color="white">
+                                <div class="screen screen--no-bleed">
+                                    <div class="view view--full">
+                                        <div class="layout">
+                                            <div class="p-6 text-center">
+                                                <h3
+                                                    class="text-2xl font-bold mb-4"
+                                                >
+                                                    Hello TRMNL!
+                                                </h3>
+                                                <p class="text-lg">
+                                                    This is content placed
+                                                    between the component tags.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </trmnl-frame>
+                        </div>
+
+                        <div class="mt-6">
+                            <h3 class="text-lg font-medium text-gray-900 mb-3">
+                                Component Controls
+                            </h3>
+                            <div
+                                class="grid grid-cols-2 gap-3 sm:grid-cols-4 mb-4"
+                            >
+                                <button
+                                    type="button"
+                                    class="rounded bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    onclick="document.getElementById('trmnl-1').setHTML('<div class=\'p-6 text-center\'><h3 class=\'text-2xl font-bold mb-4\'>Updated Content</h3><p class=\'text-lg\'>This content was set using the setHTML() method.</p></div>');"
+                                >
+                                    setHTML()
+                                </button>
+                                <button
+                                    type="button"
+                                    class="rounded bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    onclick="alert(document.getElementById('trmnl-1').getHTML());"
+                                >
+                                    getHTML()
+                                </button>
+                                <button
+                                    type="button"
+                                    class="rounded bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    onclick="document.getElementById('trmnl-1').clearContent();"
+                                >
+                                    clearContent()
+                                </button>
+                                <button
+                                    type="button"
+                                    class="rounded bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    onclick="document.getElementById('trmnl-1').setSrc('https://usetrmnl.com/component-default.html');"
+                                >
+                                    setSrc()
+                                </button>
+                            </div>
+
+                            <!-- Color dropdown selector -->
+                            <div class="mt-6">
+                                <label
+                                    for="color-select"
+                                    class="block text-sm/6 font-medium text-gray-900"
+                                >
+                                    Component Color Theme
+                                </label>
+                                <div class="mt-2 grid grid-cols-1">
+                                    <select
+                                        id="color-select"
+                                        class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                                        onchange="document.getElementById('trmnl-1').setAttribute('color', this.value);"
+                                    >
+                                        <option value="white" selected>
+                                            White
+                                        </option>
+                                        <option value="mint">Mint</option>
+                                        <option value="black">Black</option>
+                                    </select>
+                                    <svg
+                                        class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+                                        viewBox="0 0 16 16"
+                                        fill="currentColor"
+                                        aria-hidden="true"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+                                            clip-rule="evenodd"
+                                        />
+                                    </svg>
+                                </div>
+                                <div class="flex mt-3 space-x-3">
+                                    <div
+                                        class="h-6 w-6 rounded-full bg-trmnl-white border border-gray-300"
+                                        title="White"
+                                    ></div>
+                                    <div
+                                        class="h-6 w-6 rounded-full bg-trmnl-mint border border-gray-300"
+                                        title="Mint"
+                                    ></div>
+                                    <div
+                                        class="h-6 w-6 rounded-full bg-trmnl-black border border-gray-300"
+                                        title="Black"
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Second component demo with external source -->
+                <div class="flex flex-col space-y-6 items-center">
+                    <h2 class="text-2xl font-bold text-gray-900 self-start">
+                        External Content Demo
+                    </h2>
+                    <div class="bg-white shadow-lg rounded-xl p-6 w-full">
+                        <div class="flex justify-center">
+                            <trmnl-frame
+                                id="trmnl-2"
+                                class="w-full"
+                                color="black"
+                                src="https://usetrmnl.com/component-default.html"
+                            >
+                            </trmnl-frame>
+                        </div>
+                        <div class="mt-4">
+                            <div class="mb-2 text-center text-sm text-gray-500">
+                                This component loads content from an external
+                                source using the src attribute
+                            </div>
+
+                            <!-- Color dropdown for second component -->
+                            <div class="mt-6 max-w-xs mx-auto">
+                                <label
+                                    for="color-select-2"
+                                    class="block text-sm/6 font-medium text-gray-900"
+                                >
+                                    Change Color Theme
+                                </label>
+                                <div class="mt-2 grid grid-cols-1">
+                                    <select
+                                        id="color-select-2"
+                                        class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                                        onchange="document.getElementById('trmnl-2').setAttribute('color', this.value);"
+                                    >
+                                        <option value="black" selected>
+                                            Black
+                                        </option>
+                                        <option value="white">White</option>
+                                        <option value="mint">Mint</option>
+                                    </select>
+                                    <svg
+                                        class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+                                        viewBox="0 0 16 16"
+                                        fill="currentColor"
+                                        aria-hidden="true"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+                                            clip-rule="evenodd"
+                                        />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Documentation Section -->
+            <div class="mt-16">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                    TRMNL Component API
+                </h2>
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                    <div class="px-4 py-5 sm:px-6">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">
+                            Properties and Methods Reference
+                        </h3>
+                        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                            Documentation for the available properties and
+                            methods of the TRMNL component.
+                        </p>
+                    </div>
+                    <div class="border-t border-gray-200">
+                        <dl>
+                            <div
+                                class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
+                            >
+                                <dt class="text-sm font-medium text-gray-500">
+                                    Attributes
+                                </dt>
+                                <dd
+                                    class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"
+                                >
+                                    <ul class="space-y-2">
+                                        <li>
+                                            <span
+                                                class="font-mono text-indigo-600"
+                                                >src</span
+                                            >
+                                            - URL to load in the iframe
+                                        </li>
+                                        <li>
+                                            <span
+                                                class="font-mono text-indigo-600"
+                                                >color</span
+                                            >
+                                            - Color theme (white, black, mint)
+                                        </li>
+                                        <li>
+                                            <span
+                                                class="font-mono text-indigo-600"
+                                                >class</span
+                                            >
+                                            - CSS classes to apply to the
+                                            component
+                                        </li>
+                                        <li>
+                                            <span
+                                                class="font-mono text-indigo-600"
+                                                >style</span
+                                            >
+                                            - Inline styles to apply to the
+                                            component
+                                        </li>
+                                    </ul>
+                                </dd>
+                            </div>
+                            <div
+                                class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
+                            >
+                                <dt class="text-sm font-medium text-gray-500">
+                                    Methods
+                                </dt>
+                                <dd
+                                    class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"
+                                >
+                                    <ul class="space-y-2">
+                                        <li>
+                                            <span
+                                                class="font-mono text-indigo-600"
+                                                >setHTML(html)</span
+                                            >
+                                            - Sets HTML content directly inside
+                                            the component
+                                        </li>
+                                        <li>
+                                            <span
+                                                class="font-mono text-indigo-600"
+                                                >clearContent()</span
+                                            >
+                                            - Clears all content from the
+                                            component
+                                        </li>
+                                        <li>
+                                            <span
+                                                class="font-mono text-indigo-600"
+                                                >setSrc(url)</span
+                                            >
+                                            - Sets the URL to load in the iframe
+                                        </li>
+                                        <li>
+                                            <span
+                                                class="font-mono text-indigo-600"
+                                                >getHTML()</span
+                                            >
+                                            - Gets the current HTML content
+                                        </li>
+                                    </ul>
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Examples Section -->
+            <div class="mt-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                    Usage Examples
+                </h2>
+
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    <div class="p-4 bg-gray-50 border-b border-gray-200">
+                        <h3 class="font-medium text-gray-900">Basic Usage</h3>
+                    </div>
+                    <div class="p-4">
+                        <pre
+                            class="bg-gray-800 text-white p-3 rounded-md overflow-x-auto text-sm"
+                        ><code>&lt;trmnl-frame src="https://example.com/content.html"&gt;&lt;/trmnl-frame&gt;</code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-white shadow-md rounded-lg overflow-hidden mt-4">
+                    <div class="p-4 bg-gray-50 border-b border-gray-200">
+                        <h3 class="font-medium text-gray-900">
+                            With Direct Content
+                        </h3>
+                    </div>
+                    <div class="p-4">
+                        <pre
+                            class="bg-gray-800 text-white p-3 rounded-md overflow-x-auto text-sm"
+                        ><code>&lt;trmnl-frame color="mint"&gt;
+  &lt;div class="screen"&gt;
+    &lt;div class="view"&gt;
+      &lt;h1&gt;My Custom Content&lt;/h1&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/trmnl-frame&gt;</code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-white shadow-md rounded-lg overflow-hidden mt-4">
+                    <div class="p-4 bg-gray-50 border-b border-gray-200">
+                        <h3 class="font-medium text-gray-900">
+                            JavaScript API Usage
+                        </h3>
+                    </div>
+                    <div class="p-4">
+                        <pre
+                            class="bg-gray-800 text-white p-3 rounded-md overflow-x-auto text-sm"
+                        ><code>// Get reference to the component
+const terminal = document.getElementById('my-terminal');
+
+// Set HTML content
+terminal.setHTML('&lt;div&gt;Dynamic content&lt;/div&gt;');
+
+// Change source
+terminal.setSrc('https://example.com/new-content.html');
+
+// Clear content
+terminal.clearContent();
+
+// Get current HTML content
+const content = terminal.getHTML();</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-16 pt-8 border-t border-gray-200">
+                <p class="text-center text-gray-500 text-sm">
+                    &copy; 2025 TRMNL. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </body>
+</html>
