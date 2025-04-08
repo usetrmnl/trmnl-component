@@ -26,11 +26,12 @@
     <head>
         <link rel="stylesheet" href="https://usetrmnl.com/css/latest/plugins.css"/>
         <script type="text/javascript" src="https://usetrmnl.com/css/latest/plugins.js"></script>
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
         <meta charset="utf-8" />
         <title>TRMNL</title>
     </head>
     <body class="trmnl">
-        CONTENT_PLACEHOLDER
+      <div id="main-content">CONTENT_PLACEHOLDER</div>
     </body>
 </html>`;
 
@@ -49,10 +50,20 @@
         height: auto;
         display: block;
       }
+      #main-content {
+        width: 100%;
+        height: auto;
+        display: block;
+        background-opacity: 0;
+      }
       #trmnl-component-iframe {
         border: none !important;
         width: 800px;
         height: 480px;
+      }
+      #trmnl-component-iframe.dark-mode {
+        filter: invert(1) brightness(0.9) sepia(25%) contrast(0.75);
+        opacity:90%;
       }
     </style>
     <div id="container">
@@ -190,6 +201,7 @@
                        <g id="logo--brand@vector" transform="translate(363, 529)">
                            <g id="Path">
                                <use
+                                   class="logo__path"
                                    fill="#E9E9E9"
                                    fill-rule="evenodd"
                                    xlink:href="#path-6"
@@ -203,6 +215,7 @@
                            </g>
                            <g id="Shape">
                                <use
+                                  class="logo__path"
                                    fill="#E9E9E9"
                                    fill-rule="evenodd"
                                    xlink:href="#path-8"
@@ -216,6 +229,7 @@
                            </g>
                            <g id="Path">
                                <use
+                                   class="logo__path"
                                    fill="#E9E9E9"
                                    fill-rule="evenodd"
                                    xlink:href="#path-10"
@@ -229,6 +243,7 @@
                            </g>
                            <g id="Path">
                                <use
+                                   class="logo__path"
                                    fill="#E9E9E9"
                                    fill-rule="evenodd"
                                    xlink:href="#path-12"
@@ -242,6 +257,7 @@
                            </g>
                            <g id="Path">
                                <use
+                                  class="logo__path"
                                    fill="#E9E9E9"
                                    fill-rule="evenodd"
                                    xlink:href="#path-14"
@@ -255,6 +271,7 @@
                            </g>
                            <g id="Path">
                                <use
+                                   class="logo__path"
                                    fill="#E9E9E9"
                                    fill-rule="evenodd"
                                    xlink:href="#path-16"
@@ -268,6 +285,7 @@
                            </g>
                            <g id="Path">
                                <use
+                                   class="logo__path"
                                    fill="#E9E9E9"
                                    fill-rule="evenodd"
                                    xlink:href="#path-18"
@@ -281,6 +299,7 @@
                            </g>
                            <g id="Path">
                                <use
+                                   class="logo__path"
                                    fill="#E9E9E9"
                                    fill-rule="evenodd"
                                    xlink:href="#path-20"
@@ -294,6 +313,7 @@
                            </g>
                            <g id="Path">
                                <use
+                                   class="logo__path"
                                    fill="#E9E9E9"
                                    fill-rule="evenodd"
                                    xlink:href="#path-22"
@@ -307,6 +327,7 @@
                            </g>
                            <g id="Path">
                                <use
+                                   class="logo__path"
                                    fill="#E9E9E9"
                                    fill-rule="evenodd"
                                    xlink:href="#path-24"
@@ -320,6 +341,7 @@
                            </g>
                            <g id="Path">
                                <use
+                                   class="logo__path"
                                    fill="#E9E9E9"
                                    fill-rule="evenodd"
                                    xlink:href="#path-26"
@@ -333,6 +355,7 @@
                            </g>
                            <g id="Path">
                                <use
+                                   class="logo__path"
                                    fill="#E9E9E9"
                                    fill-rule="evenodd"
                                    xlink:href="#path-28"
@@ -359,6 +382,7 @@
       this._color = "white"; // Default color
       this._contentMode = "external"; // Default to external src mode
       this._htmlContent = ""; // Store HTML content
+      this._darkMode = null; // Store dark mode setting
 
       // Attach a shadow root and append the template content
       const shadow = this.attachShadow({ mode: "open" });
@@ -378,35 +402,64 @@
 
       // Process any slotted content
       this._processSlottedContent();
+
+      // Initialize dark mode media query listener if needed
+      this._darkModeMediaQuery = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+      );
+      this._darkModeMediaQuery.addEventListener("change", () => {
+        this._updateDarkMode();
+      });
     }
 
     _handleIframeLoaded() {
-      // This is called when the iframe has loaded
-      // If we're in internal mode and have content to inject, do it now
       if (this._contentMode === "internal" && this._htmlContent) {
         try {
-          // Only try to access the document if we're sure we're on about:blank
           const currentSrc = this._iframe.getAttribute("src");
           if (currentSrc === "about:blank") {
             const iframeDoc = this._iframe.contentWindow.document;
+
+            // Step 1: Write the base shell with placeholder container
             iframeDoc.open();
             iframeDoc.write(
-              contentWrapperTemplate.replace(
-                "CONTENT_PLACEHOLDER",
-                this._htmlContent,
-              ),
+              contentWrapperTemplate.replace("CONTENT_PLACEHOLDER", ""),
             );
             iframeDoc.close();
-            console.log("Injected HTML content into iframe");
+
+            // Step 2: Wait for the contentWrapperTemplate to parse & render
+            this._iframe.contentWindow.addEventListener(
+              "DOMContentLoaded",
+              () => {
+                const container = iframeDoc.getElementById("main-content");
+                if (!container) {
+                  console.warn(
+                    "main-content container not found inside iframe",
+                  );
+                  return;
+                }
+
+                // Step 3: Apply the transition & inject content
+                if (typeof iframeDoc.startViewTransition === "function") {
+                  iframeDoc.startViewTransition(() => {
+                    container.innerHTML = this._htmlContent;
+                  });
+                } else {
+                  container.innerHTML = this._htmlContent;
+                }
+
+                console.log("Dynamic content injected with View Transition");
+              },
+              { once: true },
+            );
           }
         } catch (e) {
-          console.error("Error injecting HTML into iframe:", e);
+          console.error("Error injecting HTML with transition into iframe:", e);
         }
       }
     }
 
     static get observedAttributes() {
-      return ["src", "class", "style", "color"];
+      return ["src", "class", "style", "color", "dark"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -422,6 +475,9 @@
       } else if (name === "color") {
         this._color = newValue || "white"; // Default to white if not specified
         this.updateColors();
+      } else if (name === "dark") {
+        this._darkMode = newValue;
+        this._updateDarkMode();
       }
     }
 
@@ -449,6 +505,12 @@
       }
       this.updateColors();
 
+      // Initialize dark mode
+      if (this.hasAttribute("dark")) {
+        this._darkMode = this.getAttribute("dark");
+        this._updateDarkMode();
+      }
+
       // Set up the mutation observer to handle content changes
       this._setupMutationObserver();
     }
@@ -458,6 +520,31 @@
       if (this._observer) {
         this._observer.disconnect();
       }
+
+      // Remove media query listener
+      if (this._darkModeMediaQuery) {
+        this._darkModeMediaQuery.removeEventListener("change", () => {
+          this._updateDarkMode();
+        });
+      }
+    }
+
+    _updateDarkMode() {
+      if (!this._iframe) return;
+
+      // Remove dark-mode class initially
+      this._iframe.classList.remove("dark-mode");
+
+      if (this._darkMode === "true") {
+        // Always enable dark mode
+        this._iframe.classList.add("dark-mode");
+      } else if (this._darkMode === "auto") {
+        // Check system preference
+        if (this._darkModeMediaQuery.matches) {
+          this._iframe.classList.add("dark-mode");
+        }
+      }
+      // For "false" or null, we leave dark mode disabled
     }
 
     _setupMutationObserver() {
@@ -548,7 +635,7 @@
       const logoGroup = this.shadowRoot.querySelector("#logo--brand\\@vector");
       if (logoGroup) {
         // Find all 'use' elements with fill="#E9E9E9" and update them
-        const logoElements = logoGroup.querySelectorAll("use[fill='#E9E9E9']");
+        const logoElements = logoGroup.querySelectorAll(".logo__path");
         logoElements.forEach((element) => {
           element.setAttribute("fill", colorSet.logo);
         });
@@ -556,6 +643,26 @@
     }
 
     // JavaScript API methods
+
+    /**
+     * Set the color theme: 'white', 'black', or 'mint'
+     * @param {string} color - The color theme to use
+     */
+    setColor(color) {
+      this._color = color;
+      this.updateColors();
+      return this; // For chaining
+    }
+
+    /**
+     * Set dark mode: 'true', 'false', or 'auto'
+     * @param {string} mode - The dark mode setting
+     */
+    setDark(mode) {
+      this._darkMode = mode;
+      this._updateDarkMode();
+      return this; // For chaining
+    }
 
     /**
      * Set HTML content directly, wrapping it in the template
@@ -605,6 +712,16 @@
     getHTML() {
       // Simply return the stored HTML content
       return this._contentMode === "internal" ? this._htmlContent : "";
+    }
+
+    /**
+     * Set dark mode: 'true', 'false', or 'auto'
+     * @param {string} mode - The dark mode setting
+     */
+    setDarkMode(mode) {
+      this._darkMode = mode;
+      this._updateDarkMode();
+      return this; // For chaining
     }
   }
 
