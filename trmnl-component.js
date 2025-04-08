@@ -30,7 +30,7 @@
         <meta charset="utf-8" />
         <title>TRMNL</title>
     </head>
-    <body class="trmnl">
+    <body class="trmnl"  style="background-color: white !important;">
       <div id="main-content">CONTENT_PLACEHOLDER</div>
     </body>
 </html>`;
@@ -532,19 +532,21 @@
     _updateDarkMode() {
       if (!this._iframe) return;
 
-      // Remove dark-mode class initially
+      // Step 1: Remove the class
       this._iframe.classList.remove("dark-mode");
 
-      if (this._darkMode === "true") {
-        // Always enable dark mode
+      // Step 2: Force reflow by reading offsetHeight
+      // This ensures the class removal is flushed
+      void this._iframe.offsetHeight;
+
+      // Step 3: Re-apply the class based on logic
+      const shouldEnableDark =
+        this._darkMode === "true" ||
+        (this._darkMode === "auto" && this._darkModeMediaQuery.matches);
+
+      if (shouldEnableDark) {
         this._iframe.classList.add("dark-mode");
-      } else if (this._darkMode === "auto") {
-        // Check system preference
-        if (this._darkModeMediaQuery.matches) {
-          this._iframe.classList.add("dark-mode");
-        }
       }
-      // For "false" or null, we leave dark mode disabled
     }
 
     _setupMutationObserver() {
