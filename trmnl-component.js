@@ -3,6 +3,11 @@
   // We wrap the SVG in a container <div id="container"> to allow forwarding
   // of the host element's "class" and "style" attributes.
 
+  let mainContentId = `main-content-${Math.random().toString(36).substring(2)}`;
+  let containerId = `container-${Math.random().toString(36).substring(2)}`;
+  let contentWrapperId = `container-wrapper-${Math.random().toString(36).substring(2)}`;
+  let trmnlComponentIframeId = `trmnl-component-iframe-${Math.random().toString(36).substring(2)}`;
+
   const colors = {
     white: {
       start: "#F7F6F6",
@@ -25,13 +30,13 @@
 <html lang="en">
     <head>
         <link rel="stylesheet" href="https://usetrmnl.com/css/latest/plugins.css"/>
-        <script type="text/javascript" src="https://usetrmnl.com/css/latest/plugins.js"></script>
+        <script type="text/javascript" src="https://usetrmnl.com/js/latest/plugins.js"></script>
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
         <meta charset="utf-8" />
         <title>TRMNL</title>
     </head>
     <body class="trmnl"  style="background-color: white !important;">
-      <div id="main-content">CONTENT_PLACEHOLDER</div>
+      <div id="${mainContentId}">CONTENT_PLACEHOLDER</div>
     </body>
 </html>`;
 
@@ -41,7 +46,7 @@
         display: inline-block;
         width: auto;
       }
-      #container {
+      #${containerId} {
         width: 100%;
         height: auto;
       }
@@ -50,23 +55,23 @@
         height: auto;
         display: block;
       }
-      #main-content {
+      #${mainContentId} {
         width: 100%;
         height: auto;
         display: block;
         background-opacity: 0;
       }
-      #trmnl-component-iframe {
+      #${trmnlComponentIframeId} {
         border: none !important;
         width: 800px;
         height: 480px;
       }
-      #trmnl-component-iframe.dark-mode {
+      #${trmnlComponentIframeId}.dark-mode {
         filter: invert(1) brightness(0.9) sepia(25%) contrast(0.75);
         opacity:90%;
       }
     </style>
-    <div id="container">
+    <div id="${containerId}">
     <svg width="950px" height="639px" viewBox="0 0 950 639" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>TRMNL</title>
                 <defs>
@@ -172,7 +177,7 @@
                         <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowInnerInner1"></feColorMatrix>
                     </filter>
                 </defs>
-                <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" >
                     <g id="Group" transform="translate(48, 32)">
                         <g id="Rectangle">
                             <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
@@ -183,19 +188,15 @@
                             <use fill="black" fill-opacity="1" filter="url(#filter-5)" xlink:href="#path-4"></use>
                         </g>
 
-                       <foreignobject class="node"
-                                               x="28"
-                                               y="28"
-                                               width="800"
-                                               height="480"
-                                               style="
-                                                   mix-blend-mode: darken !important;
-                                                   opacity: 0.9;
-                                                   border-radius: 12px;"
-                                           >
-                                           <div id="content-wrapper" style="position: absolute;">
-                                                <iframe id="trmnl-component-iframe" src="about:blank"></iframe>
-                                            </div>
+
+
+                       <foreignobject  class="node" x="36" y="34" width="840" height="520"
+                                      style="transform:scale(0.98);  position: relative;  border-radius: 12px; opacity: 0.9; mix-blend-mode: darken;">
+                         <div id="${contentWrapperId}"
+                             style="position: static; width: 100%; height: 100%;  max-width: 100%; max-height: 100%;">
+                           <iframe id="${trmnlComponentIframeId}" src="about:blank"
+                                   style="display:block; position: static; top: 0; left: 0; width: 100%; height: 100%; border: none;"></iframe>
+                         </div>
                        </foreignobject>
 
                        <g id="logo--brand@vector" transform="translate(363, 529)">
@@ -391,7 +392,9 @@
       shadow.appendChild(template.content.cloneNode(true));
 
       // Get reference to the iframe for later use
-      this._iframe = this.shadowRoot.querySelector("#trmnl-component-iframe");
+      this._iframe = this.shadowRoot.querySelector(
+        `#${trmnlComponentIframeId}`,
+      );
 
       // Setup iframe load handler once
       if (this._iframe) {
@@ -422,7 +425,10 @@
             // Step 1: Write the base shell with placeholder container
             iframeDoc.open();
             iframeDoc.write(
-              contentWrapperTemplate.replace("CONTENT_PLACEHOLDER", ""),
+              contentWrapperTemplate.replace(
+                `<div id="${mainContentId}">CONTENT_PLACEHOLDER</div>`,
+                `<div id="${mainContentId}"></div>`,
+              ),
             );
             iframeDoc.close();
 
@@ -430,16 +436,23 @@
             this._iframe.contentWindow.addEventListener(
               "DOMContentLoaded",
               () => {
-                const container = iframeDoc.getElementById("main-content");
+                const container = iframeDoc.getElementById(mainContentId);
                 if (!container) {
                   console.warn(
-                    "main-content container not found inside iframe",
+                    `${mainContentId} container not found inside iframe`,
                   );
                   return;
                 }
 
                 // Step 3: Apply the transition & inject content
-                if (typeof iframeDoc.startViewTransition === "function") {
+                // Check if not Safari and if startViewTransition is available
+                const isSafari = /^((?!chrome|android).)*safari/i.test(
+                  navigator.userAgent,
+                );
+                if (
+                  !isSafari &&
+                  typeof iframeDoc.startViewTransition === "function"
+                ) {
                   iframeDoc.startViewTransition(() => {
                     container.innerHTML = this._htmlContent;
                   });
@@ -447,10 +460,33 @@
                   container.innerHTML = this._htmlContent;
                 }
 
-                console.log("Dynamic content injected with View Transition");
+                console.log(
+                  "Dynamic content injected" +
+                    (!isSafari ? " with View Transition" : ""),
+                );
               },
               { once: true },
             );
+
+            const isSafari = /^((?!chrome|android).)*safari/i.test(
+              navigator.userAgent,
+            );
+            if (isSafari) {
+              console.log("Safari browser detected");
+            }
+            // Safari needs additional help to render content correctly
+            if (isSafari) {
+              const container = iframeDoc.getElementById(mainContentId);
+
+              setTimeout(() => {
+                if (container && this._htmlContent) {
+                  container.innerHTML = this._htmlContent;
+                  console.log(
+                    "Applied additional Safari-specific content update",
+                  );
+                }
+              }, 100);
+            }
           }
         } catch (e) {
           console.error("Error injecting HTML with transition into iframe:", e);
