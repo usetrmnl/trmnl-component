@@ -24,6 +24,12 @@ TRMNL is a versatile custom web component that provides a stylish terminal-like 
 <script src="trmnl-component.js" defer></script>
 ```
 
+Or import from CDN
+
+```html
+<script src="https://usetrmnl.com/js/latest/trmnl-component.js" defer></script>
+```
+
 ## Basic Usage
 
 ### Loading External Content
