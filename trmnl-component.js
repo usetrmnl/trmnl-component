@@ -24,6 +24,16 @@
       end: "#CFD3C8",
       logo: "#D8DCD1",
     },
+    gray: {
+      start: "#696e74",
+      end: "#696e74",
+      logo: "#595959",
+    },
+    wood: {
+      start: "#f9e3cb",
+      end: "#ecd4bc",
+      logo: "#fdefd5",
+    }
   };
 
   const contentWrapperTemplate = `<!doctype html>
