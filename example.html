@@ -11,17 +11,21 @@
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="./trmnl-component.js" defer></script>
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;350;375;400;450;600;700&family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
         <script>
             tailwind.config = {
                 theme: {
                     extend: {
                         fontFamily: {
                             sans: ["Inter var", "sans-serif"],
+                            heading: ['EB Garamond']
                         },
                         colors: {
                             "trmnl-black": "#313131",
                             "trmnl-mint": "#D8DCD1",
                             "trmnl-white": "#F7F6F6",
+                            "trmnl-gray": "#696e74",
+                            "trmnl-wood": "#f9e3cb",
                         },
                     },
                 },
@@ -32,9 +36,7 @@
         <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
             <!-- Header -->
             <div class="text-center mb-16">
-                <h1
-                    class="text-4xl font-extrabold text-gray-900 tracking-tight sm:text-5xl"
-                >
+                <h1 class="text-4xl font-heading font-extrabold text-gray-900 tracking-tight sm:text-5xl">
                     TRMNL Component Demo
                 </h1>
                 <p class="mt-3 max-w-2xl mx-auto text-xl text-gray-500 sm:mt-4">
@@ -46,7 +48,7 @@
             <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
                 <!-- First component demo with controls -->
                 <div class="flex flex-col space-y-6 items-center">
-                    <h2 class="text-2xl font-bold text-gray-900 self-start">
+                    <h2 class="font-heading text-2xl font-bold text-gray-900 self-start">
                         Interactive Demo
                     </h2>
                     <div class="bg-white shadow-lg rounded-xl p-6 w-full">
@@ -142,11 +144,11 @@
                                         class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                                         onchange="document.getElementById('trmnl-1').setAttribute('color', this.value);"
                                     >
-                                        <option value="white" selected>
-                                            White
-                                        </option>
+                                        <option value="white" selected>White</option>
                                         <option value="mint">Mint</option>
                                         <option value="black">Black</option>
+                                        <option value="gray">Gray</option>
+                                        <option value="wood">Wood</option>
                                     </select>
                                     <svg
                                         class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
@@ -174,6 +176,14 @@
                                         class="h-6 w-6 rounded-full bg-trmnl-black border border-gray-300"
                                         title="Black"
                                     ></div>
+                                    <div
+                                        class="h-6 w-6 rounded-full bg-trmnl-gray border border-gray-300"
+                                        title="Gray"
+                                    ></div>
+                                    <div
+                                        class="h-6 w-6 rounded-full bg-trmnl-wood border border-gray-300"
+                                        title="Wood"
+                                    ></div>
                                 </div>
                             </div>
                         </div>
@@ -182,7 +192,7 @@
 
                 <!-- Second component demo with external source -->
                 <div class="flex flex-col space-y-6 items-center">
-                    <h2 class="text-2xl font-bold text-gray-900 self-start">
+                    <h2 class="font-heading text-2xl font-bold text-gray-900 self-start">
                         External Content Demo
                     </h2>
                     <div class="bg-white shadow-lg rounded-xl p-6 w-full">
@@ -202,7 +212,7 @@
                             </div>
 
                             <!-- Color dropdown for second component -->
-                            <div class="mt-6 max-w-xs mx-auto">
+                            <div class="mt-6 max-w-xs">
                                 <label
                                     for="color-select-2"
                                     class="block text-sm/6 font-medium text-gray-900"
@@ -215,11 +225,11 @@
                                         class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                                         onchange="document.getElementById('trmnl-2').setAttribute('color', this.value);"
                                     >
-                                        <option value="black" selected>
-                                            Black
-                                        </option>
+                                        <option value="black" selected>Black</option>
                                         <option value="white">White</option>
                                         <option value="mint">Mint</option>
+                                        <option value="gray">Gray</option>
+                                        <option value="wood">Wood</option>
                                     </select>
                                     <svg
                                         class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
@@ -242,7 +252,7 @@
 
             <!-- Documentation Section -->
             <div class="mt-16">
-                <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                <h2 class="font-heading text-2xl font-bold text-gray-900 mb-6">
                     TRMNL Component API
                 </h2>
                 <div class="bg-white shadow overflow-hidden sm:rounded-lg">
@@ -290,6 +300,14 @@
                                             <code
                                                 class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
                                                 >mint</code
+                                            >,
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >gray</code
+                                            >,
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >wood</code
                                             >)
                                         </li>
                                         <li>
@@ -397,19 +415,25 @@
                                                 >setColor(color)</span
                                             >
                                             - Sets the color of the TRMNL
-                                            <code
+                                            (<code
                                                 class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
                                                 >white</code
                                             >,
                                             <code
                                                 class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
                                                 >black</code
-                                            >
-                                            or
+                                            >,
                                             <code
                                                 class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
                                                 >mint</code
-                                            >
+                                            >,
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >gray</code
+                                            >,
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >wood</code>)
                                         </li>
                                     </ul>
                                 </dd>
@@ -421,7 +445,7 @@
 
             <!-- Examples Section -->
             <div class="mt-12">
-                <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                <h2 class="font-heading text-2xl font-bold text-gray-900 mb-6">
                     Usage Examples
                 </h2>
 
@@ -491,9 +515,11 @@ terminal.setColor('black');
 // Set the color TRMNL to 'mint'
 terminal.setColor('mint');
 
+// Set the color TRMNL to 'gray'
+terminal.setColor('gray');
 
-// Clear content
-terminal.clearContent();
+// Set the color TRMNL to 'wood'
+terminal.setColor('wood');
 
 // Clear content
 terminal.clearContent();
