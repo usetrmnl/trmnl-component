@@ -200,8 +200,8 @@
 
 
 
-                       <foreignobject  class="node" x="36" y="34" width="840" height="520"
-                                      style="transform:scale(0.98);  position: relative;  border-radius: 12px; opacity: 0.9; mix-blend-mode: darken;">
+                       <foreignobject  class="node" x="28" y="28" width="800" height="480"
+                                      style="transform:scale(1);  position: relative;  border-radius: 12px; opacity: 0.9; mix-blend-mode: darken;">
                          <div id="${contentWrapperId}"
                              style="position: static; width: 100%; height: 100%;  max-width: 100%; max-height: 100%;">
                            <iframe id="${trmnlComponentIframeId}" src="about:blank"
