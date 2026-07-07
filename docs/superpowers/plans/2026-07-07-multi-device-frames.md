@@ -928,13 +928,26 @@ If `trmnl-component.js` changed: `git add trmnl-component.js && git commit -m "f
 ### TRMNL X Frame
 
 ```html
-<trmnl-frame model="x" src="https://example.com/content.html"></trmnl-frame>
+<trmnl-frame model="x">
+  <div class="screen">
+    <div class="view view--full">
+      <h1>Rendered at TRMNL X size</h1>
+    </div>
+  </div>
+</trmnl-frame>
 ```
 
-Content inside the X frame is laid out at the device's framework-logical
-1040×780 (a 1872×1404 physical panel at pixel-ratio 1.8)
-resolution and scaled to fit the frame.
+Slotted content is automatically rendered at the X's screen size: the
+component adds the framework's `screen--v2` class to your `.screen`
+elements (1040×780 logical, 1872×1404 physical at pixel-ratio 1.8).
+External `src` pages style themselves — they load in a 1872×1404 viewport
+and must size their own markup (e.g. include plugins.css and use
+`class="screen screen--v2"`).
 ````
+
+**[Amended 2026-07-07 after Task 7 review: the earlier src-based example
+paired external content with a scaling claim that only applies to slotted
+content.]**
 
   - Attributes table: add `| \`model\` | Device frame to render (\`og\`, \`x\`) | \`"og"\` |` and update the color row to `Color theme (white, black, sage, gray, wood; \`mint\` is a deprecated alias for \`sage\`)`.
   - Methods table: add `| \`setModel(model)\` | Sets the device frame (\`og\` or \`x\`) |`.
