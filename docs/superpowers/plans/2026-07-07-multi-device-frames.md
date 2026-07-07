@@ -881,7 +881,7 @@ If `trmnl-component.js` changed: `git add trmnl-component.js && git commit -m "f
   - Tailwind config: rename `"trmnl-mint": "#D8DCD1"` → `"trmnl-sage": "#D8DCD1"`, and update `"trmnl-wood"` to the Task 3 sampled `start` hex.
   - Both color `<select>`s: `<option value="mint">Mint</option>` → `<option value="sage">Sage</option>`.
   - Swatch row: `bg-trmnl-mint` → `bg-trmnl-sage`, `title="Mint"` → `title="Sage"`.
-  - Give the second demo the X frame: add `model="x"` to `<trmnl-frame id="trmnl-2" ...>` and change its description text to "This component renders the TRMNL X frame and loads content from an external source using the src attribute".
+  - ~~Give the second demo the X frame~~ **[Amended 2026-07-07: the second demo's external src (component-default.html) uses bare OG-sized `.screen` markup, which would render top-left-clustered inside an X frame — external pages style themselves and cannot be class-injected. trmnl-2 stays `og`; the X showcase is the interactive demo's model selector, where slotted content renders correctly via `screen--v2` injection.]**
   - Add a model selector to the first demo, directly after the color dropdown's closing `</div>` of the `mt-6` block (duplicate that block's structure):
 
 ```html
