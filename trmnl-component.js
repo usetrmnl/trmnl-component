@@ -362,6 +362,53 @@
                </g>
                </svg>`,
     },
+    x: {
+      screen: { width: 1872, height: 1404, scale: 800 / 1872 },
+      colors: {},
+      svg: `<svg width="956px" height="724px" viewBox="0 0 956 724" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <title>TRMNL X</title>
+                <defs>
+                    <linearGradient x1="50%" y1="0.295017483%" x2="50%" y2="98.7079327%" id="x-gradient">
+                        <stop id="start" stop-color="#F7F6F6" offset="0%"></stop>
+                        <stop id="end" stop-color="#E9E9E9" offset="100%"></stop>
+                    </linearGradient>
+                    <rect id="x-body" x="0" y="0" width="860" height="660" rx="34"></rect>
+                    <filter x="-1.3%" y="-1.7%" width="102.7%" height="104.0%" filterUnits="objectBoundingBox" id="x-drop-shadow">
+                        <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+                        <feGaussianBlur stdDeviation="3.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                        <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.342083698 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+                    </filter>
+                    <rect id="x-screen" x="30" y="30" width="800" height="600" rx="8"></rect>
+                    <filter x="-0.5%" y="-0.8%" width="101.0%" height="101.7%" filterUnits="objectBoundingBox" id="x-inner-shadow">
+                        <feGaussianBlur stdDeviation="3" in="SourceAlpha" result="shadowBlurInner1"></feGaussianBlur>
+                        <feOffset dx="0" dy="2" in="shadowBlurInner1" result="shadowOffsetInner1"></feOffset>
+                        <feComposite in="shadowOffsetInner1" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner1"></feComposite>
+                        <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowInnerInner1"></feColorMatrix>
+                    </filter>
+                </defs>
+                <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g id="Group" transform="translate(48, 32)">
+                        <g id="Body">
+                            <use fill="black" fill-opacity="1" filter="url(#x-drop-shadow)" xlink:href="#x-body"></use>
+                            <use fill="url(#x-gradient)" fill-rule="evenodd" xlink:href="#x-body"></use>
+                        </g>
+                        <g id="Screen">
+                            <use fill="#E4E2E1" fill-rule="evenodd" xlink:href="#x-screen"></use>
+                            <use fill="black" fill-opacity="1" filter="url(#x-inner-shadow)" xlink:href="#x-screen"></use>
+                        </g>
+
+                       <foreignObject class="node" x="30" y="30" width="800" height="600"
+                                      style="border-radius: 8px; opacity: 0.9; mix-blend-mode: darken;">
+                         <div id="${contentWrapperId}"
+                             style="position: static; width: 100%; height: 100%; max-width: 100%; max-height: 100%; overflow: hidden; border-radius: 8px;">
+                           <iframe id="${trmnlComponentIframeId}" src="about:blank"
+                                   style="display:block; position: static; border: none;"></iframe>
+                         </div>
+                       </foreignObject>
+                   </g>
+               </g>
+               </svg>`,
+    },
   };
 
   function frameTemplate(modelName) {
