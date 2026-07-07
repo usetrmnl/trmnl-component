@@ -416,13 +416,6 @@
 
       this._model = "og"; // Default device model
 
-      // Attach a shadow root and stamp the default frame
-      this.attachShadow({ mode: "open" });
-      this._renderFrame();
-
-      // Process any slotted content
-      this._processSlottedContent();
-
       // Initialize dark mode media query listener if needed
       this._darkModeMediaQuery = window.matchMedia(
         "(prefers-color-scheme: dark)",
@@ -430,6 +423,13 @@
       this._darkModeMediaQuery.addEventListener("change", () => {
         this._updateDarkMode();
       });
+
+      // Attach a shadow root and stamp the default frame
+      this.attachShadow({ mode: "open" });
+      this._renderFrame();
+
+      // Process any slotted content
+      this._processSlottedContent();
     }
 
     _renderFrame() {
