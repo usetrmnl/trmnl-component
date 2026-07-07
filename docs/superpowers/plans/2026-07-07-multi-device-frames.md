@@ -19,7 +19,7 @@
 - Default model is `og`; unknown model → `console.warn` + fall back to `og`.
 - Color `mint` renamed to `sage` (same hex); `mint` stays accepted as deprecated alias with a `console.warn`.
 - Landscape only; no portrait work.
-- X iframe renders at native 1872×1404 CSS px, scaled by `800/1872` into an 800×600-unit drawn screen.
+- X iframe renders at 1040×780 CSS px — the X's framework-logical resolution (`.screen--v2`: 1040×780 @ pixel-ratio 1.8 = 1872×1404 physical) — scaled by `800/1040` into an 800×600-unit drawn screen. For slotted content the component adds the model's `screenClass` (`screen--v2`) to injected `.screen` elements; stored raw HTML and external `src` pages are never mutated. **[Amended 2026-07-07 after Task 5 discovered deployed plugins.css has no raw-1872px support; user approved.]**
 - All verification tooling lives in `TOOLING=/private/tmp/claude-501/-Users-ryanckulp-Documents-code-trmnl-trmnl-component/21c79a4b-3e0d-4319-813a-084b2d4bf06e/scratchpad/tooling`.
 - Commit at the end of every task with the trailer `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`.
 
@@ -817,8 +817,10 @@ const read = (page) =>
   // NOTE: no exact-width assert for og — its iframe has inline `width: 100%`
   // (resolves to the 840px foreignObject), which is legacy behavior we keep.
   const ok =
-    og.viewBox === "0 0 950 639" && og.iframeWidth !== "1872px" && og.hasContent &&
-    x.viewBox === "0 0 956 724" && x.iframeWidth === "1872px" && x.hasContent &&
+    og.viewBox === "0 0 950 639" && og.iframeWidth !== "1040px" && og.hasContent &&
+    x.viewBox === "0 0 956 724" && x.iframeWidth === "1040px" && x.hasContent &&
+    x.screenClassApplied === true && // injected .screen carries screen--v2
+    back.screenClassApplied === false && // og re-injection must NOT carry it
     og.gradientStart === x.gradientStart && // sage survived the switch
     xDark.darkClass === true &&
     back.viewBox === "0 0 950 639" && back.hasContent && back.darkClass === true;
@@ -834,7 +836,7 @@ const read = (page) =>
 cd "$TOOLING" && node check-model-switch.js "file://$TOOLING/harness-switch.html"
 ```
 
-Expected: `PASS` — og→x→og switching preserves inline content, sage color, and dark mode across re-stamps, with the iframe resizing 800px↔1872px. If it fails, debug with superpowers:systematic-debugging; likely culprits are `_reloadContent()` ordering or the fresh iframe's natural `about:blank` onload racing `_prepareThenInjectHTML()`.
+Expected: `PASS` — og→x→og switching preserves inline content, sage color, and dark mode across re-stamps, with the iframe resizing 800px↔1040px. The `read()` helper must also return `screenClassApplied: iframe.contentDocument.querySelector(".screen")?.classList.contains("screen--v2") === true`. If it fails, debug with superpowers:systematic-debugging; likely culprits are `_reloadContent()` ordering or the fresh iframe's natural `about:blank` onload racing `_prepareThenInjectHTML()`.
 
 - [ ] **Step 4: Also verify external-src persistence.** Copy the harness to `$TOOLING/harness-switch-src.html`, replacing the `<trmnl-frame ...>...</trmnl-frame>` element with:
 
@@ -929,7 +931,8 @@ If `trmnl-component.js` changed: `git add trmnl-component.js && git commit -m "f
 <trmnl-frame model="x" src="https://example.com/content.html"></trmnl-frame>
 ```
 
-Content inside the X frame is laid out at the device's native 1872×1404
+Content inside the X frame is laid out at the device's framework-logical
+1040×780 (a 1872×1404 physical panel at pixel-ratio 1.8)
 resolution and scaled to fit the frame.
 ````
 

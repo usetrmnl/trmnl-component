@@ -29,9 +29,14 @@ Key product facts driving the design:
   `setModel()` method.
 - Existing embeds (no `model` attribute) render **exactly** as today — the OG
   SVG stays byte-identical.
-- X content renders at the device's native 1872×1404 viewport, scaled down to
-  fit the drawn screen (usetrmnl.com plugins.css handles this viewport with no
-  extra classes — confirmed).
+- X content renders the way trmnl.com production renders X screens: a
+  1040×780 logical-pixel viewport (the X's 1872×1404 panel at the framework's
+  `--pixel-ratio: 1.8`), scaled down to fit the drawn screen.
+  **Amended 2026-07-07 during implementation:** the original assumption that
+  plugins.css handles a raw 1872×1404 viewport automatically was wrong — the
+  deployed framework sizes screens via `.screen--<device>` modifier classes,
+  and the X's is `.screen--v2` (1040×780 @ pixel-ratio 1.8). Bare `.screen`
+  defaults to OG's 800×480.
 - Adding future devices is a matter of adding one registry entry.
 
 ## Non-Goals
@@ -57,7 +62,8 @@ const MODELS = {
     colors: {},                                       // per-model palette overrides
   },
   x: {
-    screen: { width: 1872, height: 1404, scale: 800 / 1872 },
+    screen: { width: 1040, height: 780, scale: 800 / 1040 },
+    screenClass: "screen--v2",  // framework device-size class for slotted content
     svg: `...new X artwork...`,
     colors: {},
   },
@@ -99,10 +105,19 @@ Shadow DOM scopes the SVG's internal ids (`path-2`, `filter-3`, `start`,
 
 ### 3. X screen rendering
 
-- Iframe laid out at **1872×1404 CSS pixels** (the X's native resolution) so
-  plugins.css renders true X-sized layouts.
-- Visually shrunk with `transform: scale(800/1872); transform-origin: 0 0;`
+- Iframe laid out at **1040×780 CSS pixels** — the X's logical resolution in
+  TRMNL's framework (`.screen--v2`: 1040×780 @ `--pixel-ratio: 1.8` =
+  1872×1404 physical). This matches how trmnl.com production renders X
+  screens. *(Amended 2026-07-07 — see Goals note.)*
+- Visually shrunk with `transform: scale(800/1040); transform-origin: 0 0;`
   to fill a 4:3 screen box drawn at 800×600 SVG units.
+- For slotted (internal) content, the component adds the model's
+  `screenClass` (`screen--v2` for X) to injected `.screen` elements so the
+  framework sizes them correctly; the stored raw HTML (`getHTML()`) is not
+  mutated. External `src` pages are untouched — they style themselves. Bare
+  `.screen` without the class would otherwise default to OG's 800×480
+  variables. The OG model has no `screenClass` (bare `.screen` already
+  defaults to OG dimensions — zero behavior change).
 - Dark mode is unchanged: the invert filter applies to the iframe regardless
   of model.
 - **Risk — Safari:** `foreignObject` + CSS transforms are historically buggy
@@ -157,7 +172,8 @@ forwarded attributes on model switch, which touches this code path.
   replace `mint` with `sage` in both color dropdowns and swatches; document
   `model` / `setModel()` in the API reference section.
 - README: document the `model` attribute and `setModel()`, note the X renders
-  at native 1872×1404, document the `sage` rename and `mint` deprecation.
+  at the X's framework-logical 1040×780 (physical 1872×1404), document the
+  `sage` rename and `mint` deprecation.
 
 ## Verification
 
