@@ -50,39 +50,13 @@
     </body>
 </html>`;
 
-  const templateHTML = `
-    <style>
-      :host {
-        display: inline-block;
-        width: auto;
-      }
-      #${containerId} {
-        width: 100%;
-        height: auto;
-      }
-      svg {
-        width: 100%;
-        height: auto;
-        display: block;
-      }
-      #${mainContentId} {
-        width: 100%;
-        height: auto;
-        display: block;
-        background-opacity: 0;
-      }
-      #${trmnlComponentIframeId} {
-        border: none !important;
-        width: 800px;
-        height: 480px;
-      }
-      #${trmnlComponentIframeId}.dark-mode {
-        filter: invert(1) brightness(0.9) sepia(25%) contrast(0.75);
-        opacity:90%;
-      }
-    </style>
-    <div id="${containerId}">
-    <svg width="950px" height="639px" viewBox="0 0 950 639" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  // Device model registry. Each model owns its frame SVG, the native
+  // resolution its screen content renders at, and any palette overrides.
+  const MODELS = {
+    og: {
+      screen: { width: 800, height: 480, scale: 1 },
+      colors: {},
+      svg: `    <svg width="950px" height="639px" viewBox="0 0 950 639" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>TRMNL</title>
                 <defs>
                     <linearGradient x1="50%" y1="0.295017483%" x2="50%" y2="98.7079327%" id="linearGradient-1">
@@ -381,9 +355,54 @@
                        </g>
                    </g>
                </g>
-               </svg>
-            </div>
+               </svg>`,
+    },
+  };
+
+  function frameTemplate(modelName) {
+    const model = MODELS[modelName];
+    const scaleCSS =
+      model.screen.scale !== 1
+        ? `
+        transform: scale(${model.screen.scale});
+        transform-origin: 0 0;`
+        : "";
+    return `
+    <style>
+      :host {
+        display: inline-block;
+        width: auto;
+      }
+      #${containerId} {
+        width: 100%;
+        height: auto;
+      }
+      svg {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      #${mainContentId} {
+        width: 100%;
+        height: auto;
+        display: block;
+        background-opacity: 0;
+      }
+      #${trmnlComponentIframeId} {
+        border: none !important;
+        width: ${model.screen.width}px;
+        height: ${model.screen.height}px;${scaleCSS}
+      }
+      #${trmnlComponentIframeId}.dark-mode {
+        filter: invert(1) brightness(0.9) sepia(25%) contrast(0.75);
+        opacity:90%;
+      }
+    </style>
+    <div id="${containerId}">
+    ${model.svg}
+    </div>
   `;
+  }
 
   class TRMNL extends HTMLElement {
     constructor() {
@@ -395,23 +414,11 @@
       this._htmlContent = ""; // Store HTML content
       this._darkMode = null; // Store dark mode setting
 
-      // Attach a shadow root and append the template content
-      const shadow = this.attachShadow({ mode: "open" });
-      const template = document.createElement("template");
-      template.innerHTML = templateHTML;
-      shadow.appendChild(template.content.cloneNode(true));
+      this._model = "og"; // Default device model
 
-      // Get reference to the iframe for later use
-      this._iframe = this.shadowRoot.querySelector(
-        `#${trmnlComponentIframeId}`,
-      );
-
-      // Setup iframe load handler once
-      if (this._iframe) {
-        this._iframe.onload = () => {
-          this._handleIframeLoaded();
-        };
-      }
+      // Attach a shadow root and stamp the default frame
+      this.attachShadow({ mode: "open" });
+      this._renderFrame();
 
       // Process any slotted content
       this._processSlottedContent();
@@ -423,6 +430,30 @@
       this._darkModeMediaQuery.addEventListener("change", () => {
         this._updateDarkMode();
       });
+    }
+
+    _renderFrame() {
+      const template = document.createElement("template");
+      template.innerHTML = frameTemplate(this._model);
+      this.shadowRoot.replaceChildren(template.content.cloneNode(true));
+
+      // Get reference to the iframe for later use
+      this._iframe = this.shadowRoot.querySelector(
+        `#${trmnlComponentIframeId}`,
+      );
+
+      // Setup iframe load handler
+      if (this._iframe) {
+        this._iframe.onload = () => {
+          this._handleIframeLoaded();
+        };
+      }
+
+      // Re-apply state that lives in the frame's DOM
+      this.updateContainerAttribute("class", this.getAttribute("class"));
+      this.updateContainerAttribute("style", this.getAttribute("style"));
+      this.updateColors();
+      this._updateDarkMode();
     }
 
     _handleIframeLoaded() {
@@ -650,7 +681,7 @@
     }
 
     updateContainerAttribute(name, value) {
-      const container = this.shadowRoot.querySelector("#container");
+      const container = this.shadowRoot.querySelector(`#${containerId}`);
       if (container) {
         if (value !== null) {
           container.setAttribute(name, value);
@@ -661,13 +692,15 @@
     }
 
     updateColors() {
-      // Validate that the color exists in our colors object
-      if (!colors[this._color]) {
+      const palette = { ...colors, ...MODELS[this._model].colors };
+
+      // Validate that the color exists in our palette
+      if (!palette[this._color]) {
         console.warn(`Color "${this._color}" not found, defaulting to white`);
         this._color = "white";
       }
 
-      const colorSet = colors[this._color];
+      const colorSet = palette[this._color];
 
       // Update the gradient stops
       const startStop = this.shadowRoot.querySelector("#start");
