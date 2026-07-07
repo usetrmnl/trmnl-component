@@ -698,16 +698,17 @@
 
     updateColors() {
       if (colorAliases[this._color]) {
-        // connectedCallback() and attributeChangedCallback() can each
-        // independently re-derive this._color from the raw "color"
-        // attribute during upgrade, calling updateColors() more than once
-        // for the same deprecated value. Only warn the first time so the
-        // message fires once per assignment, not once per internal re-init.
-        if (this._color !== this._lastDeprecatedColor) {
+        // Element upgrade invokes updateColors() twice synchronously
+        // (attributeChangedCallback + connectedCallback); dedup those,
+        // but warn again on any later reassignment.
+        if (!this._deprecationWarnPending) {
           console.warn(
             `Color "${this._color}" is deprecated; use "${colorAliases[this._color]}" instead`,
           );
-          this._lastDeprecatedColor = this._color;
+          this._deprecationWarnPending = true;
+          queueMicrotask(() => {
+            this._deprecationWarnPending = false;
+          });
         }
         this._color = colorAliases[this._color];
       }
