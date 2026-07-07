@@ -540,8 +540,30 @@
       }
     }
 
+    _setModel(model) {
+      const requested = model || "og";
+      let resolved = requested;
+      if (!MODELS[resolved]) {
+        console.warn(`Model "${requested}" not found, defaulting to og`);
+        resolved = "og";
+      }
+      if (resolved === this._model) return;
+
+      this._model = resolved;
+      this._renderFrame();
+      this._reloadContent();
+    }
+
+    _reloadContent() {
+      if (this._contentMode === "external" && this._src) {
+        this.updateIframe();
+      } else if (this._contentMode === "internal" && this._htmlContent) {
+        this._prepareThenInjectHTML();
+      }
+    }
+
     static get observedAttributes() {
-      return ["src", "class", "style", "color", "dark"];
+      return ["src", "class", "style", "color", "dark", "model"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -560,11 +582,18 @@
       } else if (name === "dark") {
         this._darkMode = newValue;
         this._updateDarkMode();
+      } else if (name === "model") {
+        this._setModel(newValue);
       }
     }
 
     connectedCallback() {
       console.log("TRMNL connectedCallback invoked.");
+
+      // Initialize device model
+      if (this.hasAttribute("model")) {
+        this._setModel(this.getAttribute("model"));
+      }
 
       // Process any existing content from innerHTML
       this._processSlottedContent();
@@ -753,6 +782,15 @@
     setColor(color) {
       this._color = color;
       this.updateColors();
+      return this; // For chaining
+    }
+
+    /**
+     * Set the device model: 'og' or 'x'
+     * @param {string} model - The device frame to render
+     */
+    setModel(model) {
+      this._setModel(model);
       return this; // For chaining
     }
 
