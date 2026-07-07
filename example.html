@@ -22,10 +22,10 @@
                         },
                         colors: {
                             "trmnl-black": "#313131",
-                            "trmnl-mint": "#D8DCD1",
+                            "trmnl-sage": "#D8DCD1",
                             "trmnl-white": "#F7F6F6",
                             "trmnl-gray": "#696e74",
-                            "trmnl-wood": "#f9e3cb",
+                            "trmnl-wood": "#c4ac95",
                         },
                     },
                 },
@@ -145,7 +145,7 @@
                                         onchange="document.getElementById('trmnl-1').setAttribute('color', this.value);"
                                     >
                                         <option value="white" selected>White</option>
-                                        <option value="mint">Mint</option>
+                                        <option value="sage">Sage</option>
                                         <option value="black">Black</option>
                                         <option value="gray">Gray</option>
                                         <option value="wood">Wood</option>
@@ -169,8 +169,8 @@
                                         title="White"
                                     ></div>
                                     <div
-                                        class="h-6 w-6 rounded-full bg-trmnl-mint border border-gray-300"
-                                        title="Mint"
+                                        class="h-6 w-6 rounded-full bg-trmnl-sage border border-gray-300"
+                                        title="Sage"
                                     ></div>
                                     <div
                                         class="h-6 w-6 rounded-full bg-trmnl-black border border-gray-300"
@@ -184,6 +184,38 @@
                                         class="h-6 w-6 rounded-full bg-trmnl-wood border border-gray-300"
                                         title="Wood"
                                     ></div>
+                                </div>
+                            </div>
+
+                            <!-- Model dropdown selector -->
+                            <div class="mt-6">
+                                <label
+                                    for="model-select"
+                                    class="block text-sm/6 font-medium text-gray-900"
+                                >
+                                    Device Model
+                                </label>
+                                <div class="mt-2 grid grid-cols-1">
+                                    <select
+                                        id="model-select"
+                                        class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                                        onchange="document.getElementById('trmnl-1').setAttribute('model', this.value);"
+                                    >
+                                        <option value="og" selected>TRMNL (OG)</option>
+                                        <option value="x">TRMNL X</option>
+                                    </select>
+                                    <svg
+                                        class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+                                        viewBox="0 0 16 16"
+                                        fill="currentColor"
+                                        aria-hidden="true"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+                                            clip-rule="evenodd"
+                                        />
+                                    </svg>
                                 </div>
                             </div>
                         </div>
@@ -227,7 +259,7 @@
                                     >
                                         <option value="black" selected>Black</option>
                                         <option value="white">White</option>
-                                        <option value="mint">Mint</option>
+                                        <option value="sage">Sage</option>
                                         <option value="gray">Gray</option>
                                         <option value="wood">Wood</option>
                                     </select>
@@ -299,7 +331,7 @@
                                             >,
                                             <code
                                                 class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
-                                                >mint</code
+                                                >sage</code
                                             >,
                                             <code
                                                 class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
@@ -345,6 +377,24 @@
                                                 class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
                                                 >auto</code
                                             >
+                                        </li>
+                                        <li>
+                                            <span
+                                                class="font-mono text-indigo-600"
+                                                >model</span
+                                            >
+                                            - Device frame to render (<code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >og</code
+                                            >,
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >x</code
+                                            >). Default
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >og</code
+                                            >.
                                         </li>
                                     </ul>
                                 </dd>
@@ -425,7 +475,7 @@
                                             >,
                                             <code
                                                 class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
-                                                >mint</code
+                                                >sage</code
                                             >,
                                             <code
                                                 class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
@@ -434,6 +484,20 @@
                                             <code
                                                 class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
                                                 >wood</code>)
+                                        </li>
+                                        <li>
+                                            <span
+                                                class="font-mono text-indigo-600"
+                                                >setModel(model)</span
+                                            >
+                                            - Sets the device frame (<code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >og</code
+                                            >
+                                            or
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >x</code>)
                                         </li>
                                     </ul>
                                 </dd>
@@ -469,7 +533,7 @@
                     <div class="p-4">
                         <pre
                             class="bg-gray-800 text-white p-3 rounded-md overflow-x-auto text-sm"
-                        ><code>&lt;trmnl-frame color="mint" dark="true"&gt;
+                        ><code>&lt;trmnl-frame color="sage" dark="true"&gt;
   &lt;div class="screen"&gt;
     &lt;div class="view"&gt;
       &lt;h1&gt;My Custom Content&lt;/h1&gt;
@@ -512,14 +576,20 @@ terminal.setColor('white');
 // Set the color TRMNL to 'black'
 terminal.setColor('black');
 
-// Set the color TRMNL to 'mint'
-terminal.setColor('mint');
+// Set the color TRMNL to 'sage'
+terminal.setColor('sage');
 
 // Set the color TRMNL to 'gray'
 terminal.setColor('gray');
 
 // Set the color TRMNL to 'wood'
 terminal.setColor('wood');
+
+// Set the device frame to 'og'
+terminal.setModel('og');
+
+// Set the device frame to 'x'
+terminal.setModel('x');
 
 // Clear content
 terminal.clearContent();

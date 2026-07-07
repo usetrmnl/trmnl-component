@@ -13,7 +13,8 @@ TRMNL is a versatile custom web component that provides a stylish terminal-like 
 ## Features
 
 - **Multiple Content Sources**: Load content from external URLs or inject HTML directly
-- **Custom Color Themes**: Choose from white, black, and mint themes
+- **Custom Color Themes**: Choose from white, black, sage, gray, and wood themes
+- **Multiple Device Frames**: Render the original TRMNL or the TRMNL X via the `model` attribute
 - **Responsive Design**: Automatically adapts to its container size
 - **JavaScript API**: Programmatically control content and appearance
 - **CSS Scoping**: Content is isolated in an iframe for better style encapsulation
@@ -38,10 +39,20 @@ Or import from CDN
 <trmnl-frame src="https://example.com/content.html"></trmnl-frame>
 ```
 
+### TRMNL X Frame
+
+```html
+<trmnl-frame model="x" src="https://example.com/content.html"></trmnl-frame>
+```
+
+Content inside the X frame is laid out at the device's framework-logical
+1040×780 (a 1872×1404 physical panel at pixel-ratio 1.8)
+resolution and scaled to fit the frame.
+
 ### With Direct HTML Content
 
 ```html
-<trmnl-frame color="mint">
+<trmnl-frame color="sage">
   <div class="screen">
     <div class="view">
       <h1>My Custom Content</h1>
@@ -68,7 +79,8 @@ Or import from CDN
 | Attribute | Description | Default |
 |-----------|-------------|---------|
 | `src` | URL to load in the iframe | - |
-| `color` | Color theme (white, black, mint) | `"white"` |
+| `color` | Color theme (white, black, sage, gray, wood; `mint` is a deprecated alias for `sage`) | `"white"` |
+| `model` | Device frame to render (`og`, `x`) | `"og"` |
 | `class` | CSS classes to apply to the component | - |
 | `style` | Inline styles to apply to the component | - |
 
@@ -80,6 +92,7 @@ Or import from CDN
 | `clearContent()` | Clears all content from the component |
 | `setSrc(url)` | Sets the URL to load in the iframe |
 | `getHTML()` | Gets the current HTML content |
+| `setModel(model)` | Sets the device frame (`og` or `x`) |
 
 ## JavaScript Usage
 
