@@ -62,7 +62,7 @@ const MODELS = {
     colors: {},                                       // per-model palette overrides
   },
   x: {
-    screen: { width: 1040, height: 780, scale: 800 / 1040 },
+    screen: { width: 1872, height: 1404, scale: 800 / 1872 },
     screenClass: "screen--v2",  // framework device-size class for slotted content
     svg: `...new X artwork...`,
     colors: {},
@@ -105,11 +105,13 @@ Shadow DOM scopes the SVG's internal ids (`path-2`, `filter-3`, `start`,
 
 ### 3. X screen rendering
 
-- Iframe laid out at **1040×780 CSS pixels** — the X's logical resolution in
-  TRMNL's framework (`.screen--v2`: 1040×780 @ `--pixel-ratio: 1.8` =
-  1872×1404 physical). This matches how trmnl.com production renders X
-  screens. *(Amended 2026-07-07 — see Goals note.)*
-- Visually shrunk with `transform: scale(800/1040); transform-origin: 0 0;`
+- Iframe laid out at **1872×1404 CSS pixels** (the X's physical resolution).
+  The framework's `.screen--v2` class sizes content at 1040×780 logical px
+  and applies its own internal `transform: scale(1.8)` up to 1872×1404 — so
+  the iframe viewport must be the physical size or the scaled content clips.
+  *(Amended 2026-07-07 twice: first to logical 1040×780, then reverted to
+  physical after empirically confirming `.screen--v2` self-scales.)*
+- Visually shrunk with `transform: scale(800/1872); transform-origin: 0 0;`
   to fill a 4:3 screen box drawn at 800×600 SVG units.
 - For slotted (internal) content, the component adds the model's
   `screenClass` (`screen--v2` for X) to injected `.screen` elements so the
