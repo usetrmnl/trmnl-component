@@ -8,7 +8,7 @@
   let contentWrapperId = `container-wrapper-${Math.random().toString(36).substring(2)}`;
   let trmnlComponentIframeId = `trmnl-component-iframe-${Math.random().toString(36).substring(2)}`;
 
-  const colors = {
+  const baseColors = {
     white: {
       start: "#F7F6F6",
       end: "#E9E9E9",
@@ -19,7 +19,7 @@
       end: "#313131",
       logo: "#595959",
     },
-    mint: {
+    sage: {
       start: "#D9DED0",
       end: "#CFD3C8",
       logo: "#D8DCD1",
@@ -30,10 +30,15 @@
       logo: "#595959",
     },
     wood: {
-      start: "#f9e3cb",
-      end: "#ecd4bc",
-      logo: "#fdefd5",
+      start: "#c4ac95",
+      end: "#c7af96",
+      logo: "#d3c1b0",
     }
+  };
+
+  // Deprecated color names, mapped to their canonical replacements.
+  const colorAliases = {
+    mint: "sage",
   };
 
   const contentWrapperTemplate = `<!doctype html>
@@ -692,7 +697,22 @@
     }
 
     updateColors() {
-      const palette = { ...colors, ...MODELS[this._model].colors };
+      if (colorAliases[this._color]) {
+        // connectedCallback() and attributeChangedCallback() can each
+        // independently re-derive this._color from the raw "color"
+        // attribute during upgrade, calling updateColors() more than once
+        // for the same deprecated value. Only warn the first time so the
+        // message fires once per assignment, not once per internal re-init.
+        if (this._color !== this._lastDeprecatedColor) {
+          console.warn(
+            `Color "${this._color}" is deprecated; use "${colorAliases[this._color]}" instead`,
+          );
+          this._lastDeprecatedColor = this._color;
+        }
+        this._color = colorAliases[this._color];
+      }
+
+      const palette = { ...baseColors, ...MODELS[this._model].colors };
 
       // Validate that the color exists in our palette
       if (!palette[this._color]) {
