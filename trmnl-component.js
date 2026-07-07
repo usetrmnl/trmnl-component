@@ -363,7 +363,15 @@
                </svg>`,
     },
     x: {
+      // plugins.css's .screen--v2 lays out content at logical 1040x780 then
+      // applies its own internal `transform: scale(1.8)` (pixel-ratio) to
+      // reach physical 1872x1404. An <iframe> always clips to its own CSS
+      // box (that box defines its internal viewport), so the box here must
+      // be sized to that physical output — 1040x780 would only show the
+      // top-left slice of the scaled content and clip the title bar.
       screen: { width: 1872, height: 1404, scale: 800 / 1872 },
+      // framework device-size class applied to slotted .screen elements
+      screenClass: "screen--v2",
       colors: {},
       svg: `<svg width="956px" height="724px" viewBox="0 0 956 724" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>TRMNL X</title>
@@ -508,6 +516,21 @@
       this._updateDarkMode();
     }
 
+    _injectContent(container) {
+      container.innerHTML = this._htmlContent;
+      this._applyScreenClass(container);
+    }
+
+    _applyScreenClass(container) {
+      // Framework device-size class (e.g. screen--v2 for the X): applied to
+      // the injected DOM only — the stored raw HTML stays unmutated.
+      const screenClass = MODELS[this._model].screenClass;
+      if (!screenClass) return;
+      container.querySelectorAll(".screen").forEach((el) => {
+        el.classList.add(screenClass);
+      });
+    }
+
     _handleIframeLoaded() {
       if (this._contentMode === "internal" && this._htmlContent) {
         try {
@@ -547,10 +570,10 @@
                   typeof iframeDoc.startViewTransition === "function"
                 ) {
                   iframeDoc.startViewTransition(() => {
-                    container.innerHTML = this._htmlContent;
+                    this._injectContent(container);
                   });
                 } else {
-                  container.innerHTML = this._htmlContent;
+                  this._injectContent(container);
                 }
 
                 console.log(
@@ -573,7 +596,7 @@
 
               setTimeout(() => {
                 if (container && this._htmlContent) {
-                  container.innerHTML = this._htmlContent;
+                  this._injectContent(container);
                   console.log(
                     "Applied additional Safari-specific content update",
                   );
