@@ -44,8 +44,8 @@
   const contentWrapperTemplate = `<!doctype html>
 <html lang="en">
     <head>
-        <link rel="stylesheet" href="https://usetrmnl.com/css/latest/plugins.css"/>
-        <script type="text/javascript" src="https://usetrmnl.com/js/latest/plugins.js"></script>
+        <link rel="stylesheet" href="https://trmnl.com/css/latest/plugins.css"/>
+        <script type="text/javascript" src="https://trmnl.com/js/latest/plugins.js"></script>
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
         <meta charset="utf-8" />
         <title>TRMNL</title>
