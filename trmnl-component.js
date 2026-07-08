@@ -378,26 +378,30 @@
       // "Safari/WebKit — outcome"): the X screen is rendered as a plain HTML
       // overlay positioned on top of the SVG instead of foreignObject
       // content. `overlay` gives the screen box's position in the SVG's
-      // viewBox coordinate space (group translate 48,32 + inset 30,30) plus
+      // viewBox coordinate space (group translate 48,32 + inset 44,44) plus
       // the viewBox dimensions, so frameTemplate() can express the overlay's
       // left/top/width/height as percentages that track the SVG's
       // responsive `width: 100%` scaling.
-      overlay: { x: 78, y: 62, w: 800, h: 600, viewW: 956, viewH: 724 },
+      //
+      // Bezel geometry per mechanical drawing (outer 233x192mm): side/top
+      // bezel is 44 units, bottom bezel is 2x that (88 units) to house the
+      // screen controller and touch bar. Body 888x732, screen 800x600 fixed.
+      overlay: { x: 92, y: 76, w: 800, h: 600, viewW: 984, viewH: 796 },
       colors: {},
-      svg: `<svg width="956px" height="724px" viewBox="0 0 956 724" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      svg: `<svg width="984px" height="796px" viewBox="0 0 984 796" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>TRMNL X</title>
                 <defs>
                     <linearGradient x1="50%" y1="0.295017483%" x2="50%" y2="98.7079327%" id="x-gradient">
                         <stop id="start" stop-color="#F7F6F6" offset="0%"></stop>
                         <stop id="end" stop-color="#E9E9E9" offset="100%"></stop>
                     </linearGradient>
-                    <rect id="x-body" x="0" y="0" width="860" height="660" rx="34"></rect>
+                    <rect id="x-body" x="0" y="0" width="888" height="732" rx="34"></rect>
                     <filter x="-1.3%" y="-1.7%" width="102.7%" height="104.0%" filterUnits="objectBoundingBox" id="x-drop-shadow">
                         <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
                         <feGaussianBlur stdDeviation="3.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
                         <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.342083698 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
                     </filter>
-                    <rect id="x-screen" x="30" y="30" width="800" height="600" rx="8"></rect>
+                    <rect id="x-screen" x="44" y="44" width="800" height="600" rx="8"></rect>
                     <filter x="-0.5%" y="-0.8%" width="101.0%" height="101.7%" filterUnits="objectBoundingBox" id="x-inner-shadow">
                         <feGaussianBlur stdDeviation="3" in="SourceAlpha" result="shadowBlurInner1"></feGaussianBlur>
                         <feOffset dx="0" dy="2" in="shadowBlurInner1" result="shadowOffsetInner1"></feOffset>
