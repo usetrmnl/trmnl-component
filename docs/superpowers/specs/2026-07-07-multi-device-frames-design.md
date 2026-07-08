@@ -195,6 +195,17 @@ onto the inner container has been silently broken. Fix the selector to use
 the generated id. This is in scope because `_renderFrame()` must re-apply
 forwarded attributes on model switch, which touches this code path.
 
+**Amended 2026-07-07 (final review, user decision): forwarding is REMOVED
+instead of fixed.** The final whole-branch review measured that working
+forwarding double-applies host styles (a `style` attribute already applies
+natively to the host element; copying it onto the inner shadow container
+doubles margins and squares opacity — every existing CDN embed passing
+`style` would change rendering on upgrade). Since native host styling
+already provides exactly what the README documents, the forwarding code
+(`updateContainerAttribute`, its call sites, and `class`/`style` in
+`observedAttributes`) is deleted outright. Net behavior for existing embeds
+is identical to pre-branch (forwarding never worked).
+
 ### 7. example.html and README
 
 - example.html: add a model selector (OG / X) to the interactive demo;
