@@ -614,40 +614,49 @@
             iframeDoc.close();
 
             // Step 2: Wait for the contentWrapperTemplate to parse & render
-            this._iframe.contentWindow.addEventListener(
-              "DOMContentLoaded",
-              () => {
-                const container = iframeDoc.getElementById(mainContentId);
-                if (!container) {
-                  console.warn(
-                    `${mainContentId} container not found inside iframe`,
-                  );
-                  return;
-                }
-
-                // Step 3: Apply the transition & inject content
-                // Check if not Safari and if startViewTransition is available
-                const isSafari = /^((?!chrome|android).)*safari/i.test(
-                  navigator.userAgent,
+            const injectWhenParsed = () => {
+              const container = iframeDoc.getElementById(mainContentId);
+              if (!container) {
+                console.warn(
+                  `${mainContentId} container not found inside iframe`,
                 );
-                if (
-                  !isSafari &&
-                  typeof iframeDoc.startViewTransition === "function"
-                ) {
-                  iframeDoc.startViewTransition(() => {
-                    this._injectContent(container);
-                  });
-                } else {
+                return;
+              }
+
+              // Step 3: Apply the transition & inject content
+              // Check if not Safari and if startViewTransition is available
+              const isSafari = /^((?!chrome|android).)*safari/i.test(
+                navigator.userAgent,
+              );
+              if (
+                !isSafari &&
+                typeof iframeDoc.startViewTransition === "function"
+              ) {
+                iframeDoc.startViewTransition(() => {
                   this._injectContent(container);
-                }
+                });
+              } else {
+                this._injectContent(container);
+              }
 
-                console.log(
-                  "Dynamic content injected" +
-                    (!isSafari ? " with View Transition" : ""),
-                );
-              },
-              { once: true },
-            );
+              console.log(
+                "Dynamic content injected" +
+                  (!isSafari ? " with View Transition" : ""),
+              );
+            };
+
+            // When the shell's subresources come from cache, parsing can
+            // finish before this code runs — DOMContentLoaded has already
+            // fired and a listener would never be called.
+            if (iframeDoc.readyState === "loading") {
+              this._iframe.contentWindow.addEventListener(
+                "DOMContentLoaded",
+                injectWhenParsed,
+                { once: true },
+              );
+            } else {
+              injectWhenParsed();
+            }
 
             const isSafari = /^((?!chrome|android).)*safari/i.test(
               navigator.userAgent,
