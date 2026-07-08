@@ -395,13 +395,13 @@
                         <stop id="start" stop-color="#F7F6F6" offset="0%"></stop>
                         <stop id="end" stop-color="#E9E9E9" offset="100%"></stop>
                     </linearGradient>
-                    <rect id="x-body" x="0" y="0" width="888" height="732" rx="34"></rect>
+                    <rect id="x-body" x="0" y="0" width="888" height="732" rx="12"></rect>
                     <filter x="-1.3%" y="-1.7%" width="102.7%" height="104.0%" filterUnits="objectBoundingBox" id="x-drop-shadow">
                         <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
                         <feGaussianBlur stdDeviation="3.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
                         <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.342083698 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
                     </filter>
-                    <rect id="x-screen" x="44" y="44" width="800" height="600" rx="8"></rect>
+                    <rect id="x-screen" x="44" y="44" width="800" height="600" rx="3"></rect>
                     <filter x="-0.5%" y="-0.8%" width="101.0%" height="101.7%" filterUnits="objectBoundingBox" id="x-inner-shadow">
                         <feGaussianBlur stdDeviation="3" in="SourceAlpha" result="shadowBlurInner1"></feGaussianBlur>
                         <feOffset dx="0" dy="2" in="shadowBlurInner1" result="shadowOffsetInner1"></feOffset>
@@ -455,7 +455,7 @@
         width: ${(overlay.w / overlay.viewW) * 100}%;
         height: ${(overlay.h / overlay.viewH) * 100}%;
         overflow: hidden;
-        border-radius: 8px;
+        border-radius: 3px;
         opacity: 0.9;
         mix-blend-mode: darken;
       }`
