@@ -925,7 +925,7 @@
     // JavaScript API methods
 
     /**
-     * Set the color theme: 'white', 'black', or 'mint'
+     * Set the color theme: 'white', 'black', 'sage', 'gray', or 'wood'
      * @param {string} color - The color theme to use
      */
     setColor(color) {
