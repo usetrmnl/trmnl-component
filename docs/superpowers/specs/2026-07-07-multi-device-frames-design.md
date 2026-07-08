@@ -122,11 +122,29 @@ Shadow DOM scopes the SVG's internal ids (`path-2`, `filter-3`, `start`,
   defaults to OG dimensions — zero behavior change).
 - Dark mode is unchanged: the invert filter applies to the iframe regardless
   of model.
-- **Risk — Safari:** `foreignObject` + CSS transforms are historically buggy
-  in Safari (this repo already carries a Safari-fix commit). Safari gets
-  explicit verification; if scaling inside `foreignObject` misrenders, the
-  fallback is applying the scale on an inner wrapper div instead of the
-  iframe element itself.
+- **Safari/WebKit — outcome (amended 2026-07-07):** the risk materialized.
+  WebKit (Playwright and real Safari, user-confirmed) mis-paints scaled
+  iframe content inside `foreignObject` — content bleeds past the bezel's
+  clip. Moving the transform to the wrapper div did not help; CSS `zoom`
+  was worse (mis-scaled AND mis-positioned). The proven fix (prototyped in
+  isolation, clean in WebKit/Chromium/Firefox): **the X screen is an HTML
+  overlay, not `foreignObject` content.** Design:
+  - The X SVG draws the frame only (no `foreignObject`). The container div
+    is `position: relative`; a wrapper div is absolutely positioned over
+    the drawn screen box using percentages of the viewBox (left 78/956,
+    top 62/724, width 800/956, height 600/724), so it tracks the SVG's
+    responsive `width: 100%` scaling automatically. It keeps
+    `overflow: hidden`, `border-radius`, and the e-ink look
+    (`opacity: 0.9; mix-blend-mode: darken`) the foreignObject carried.
+  - The iframe inside stays 1872×1404 layout px. Its visual scale must
+    track the rendered overlay size, which CSS transforms can't derive, so
+    a `ResizeObserver` on the wrapper sets
+    `transform: scale(wrapperWidth / 1872)` (initial CSS scale 800/1872 for
+    sane first paint; observer set up in `_renderFrame`, reconnected in
+    `connectedCallback`, disconnected in `disconnectedCallback`).
+  - The OG model is untouched — it keeps its original `foreignObject`
+    structure (scale 1 never triggered the bug) under the byte-identical /
+    pixel-gate constraint.
 
 ### 4. X frame artwork
 
