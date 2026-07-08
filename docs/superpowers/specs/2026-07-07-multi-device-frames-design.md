@@ -154,12 +154,18 @@ photos as proportion reference:
 - Same construction as OG: gradient-filled body (`#start`/`#end` stops),
   outer drop-shadow filter, inner screen rect with inset shadow, screen
   background `#E4E2E1`.
-- X-specific: 4:3 screen (800×600 units), slim even bezel (~30 units) with
-  **no bottom chin**, corner radius ~34 (slightly larger than OG's 28), and
-  **no logo** — the X has a clean, unbranded front.
-- ViewBox ~950×727 (same drop-shadow margins as OG), so the X drops into
-  existing pages at a similar rendered width. Host pages control final size
-  as today (`width: 100%; height: auto`).
+- X-specific: 4:3 screen (800×600 units), corner radius ~34 (slightly larger
+  than OG's 28), and **no logo** — the X has a clean, unbranded front.
+- **Bezels (amended 2026-07-07 from the 233×192 mm mechanical drawing the
+  user provided):** side and top bezels 44 units, bottom bezel 88 units
+  (~2× — houses the screen controller and touch bar). Body 888×732
+  (aspect 1.2131 ≈ the drawing's 233/192 = 1.2135). The original "slim even
+  bezel, no bottom chin" reading came from angled product photos and was
+  wrong.
+- ViewBox 984×796 (same 48/32 drop-shadow margins as OG), so the X drops
+  into existing pages at a similar rendered width. Host pages control final
+  size as today (`width: 100%; height: auto`). Overlay screen box sits at
+  (92, 76) in viewBox coordinates.
 - The bezel/radius/viewBox numbers above are starting points, not contracts:
   final values are tuned during implementation, and the acceptance criterion
   is a side-by-side visual match against the shop.trmnl.com product photos.
