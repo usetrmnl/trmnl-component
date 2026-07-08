@@ -1,7 +1,7 @@
 (function () {
   // Define the HTML template as a string.
-  // We wrap the SVG in a container <div id="container"> to allow forwarding
-  // of the host element's "class" and "style" attributes.
+  // The SVG is wrapped in a container <div> that also anchors positioning
+  // for overlay-based models (see MODELS.x.overlay).
 
   let mainContentId = `main-content-${Math.random().toString(36).substring(2)}`;
   let containerId = `container-${Math.random().toString(36).substring(2)}`;
@@ -549,8 +549,6 @@
       }
 
       // Re-apply state that lives in the frame's DOM
-      this.updateContainerAttribute("class", this.getAttribute("class"));
-      this.updateContainerAttribute("style", this.getAttribute("style"));
       this.updateColors();
       this._updateDarkMode();
       this._setupScreenScaler();
@@ -700,7 +698,7 @@
     }
 
     static get observedAttributes() {
-      return ["src", "class", "style", "color", "dark", "model"];
+      return ["src", "color", "dark", "model"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -711,8 +709,6 @@
         this._src = newValue;
         this._contentMode = "external";
         this.updateIframe();
-      } else if (name === "class" || name === "style") {
-        this.updateContainerAttribute(name, newValue);
       } else if (name === "color") {
         this._color = newValue || "white"; // Default to white if not specified
         this.updateColors();
@@ -742,10 +738,6 @@
         this._contentMode = "external";
         this.updateIframe();
       }
-
-      // Initialize container attributes for class and style
-      this.updateContainerAttribute("class", this.getAttribute("class"));
-      this.updateContainerAttribute("style", this.getAttribute("style"));
 
       // Initialize color
       if (this.hasAttribute("color")) {
@@ -861,17 +853,6 @@
           );
         }
       });
-    }
-
-    updateContainerAttribute(name, value) {
-      const container = this.shadowRoot.querySelector(`#${containerId}`);
-      if (container) {
-        if (value !== null) {
-          container.setAttribute(name, value);
-        } else {
-          container.removeAttribute(name);
-        }
-      }
     }
 
     updateColors() {
