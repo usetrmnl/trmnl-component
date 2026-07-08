@@ -131,8 +131,8 @@ Shadow DOM scopes the SVG's internal ids (`path-2`, `filter-3`, `start`,
   overlay, not `foreignObject` content.** Design:
   - The X SVG draws the frame only (no `foreignObject`). The container div
     is `position: relative`; a wrapper div is absolutely positioned over
-    the drawn screen box using percentages of the viewBox (left 78/956,
-    top 62/724, width 800/956, height 600/724), so it tracks the SVG's
+    the drawn screen box using percentages of the viewBox (left 92/984,
+    top 76/796, width 800/984, height 600/796), so it tracks the SVG's
     responsive `width: 100%` scaling automatically. It keeps
     `overflow: hidden`, `border-radius`, and the e-ink look
     (`opacity: 0.9; mix-blend-mode: darken`) the foreignObject carried.
@@ -154,8 +154,11 @@ photos as proportion reference:
 - Same construction as OG: gradient-filled body (`#start`/`#end` stops),
   outer drop-shadow filter, inner screen rect with inset shadow, screen
   background `#E4E2E1`.
-- X-specific: 4:3 screen (800×600 units), corner radius ~34 (slightly larger
-  than OG's 28), and **no logo** — the X has a clean, unbranded front.
+- X-specific: 4:3 screen (800×600 units), **subtle corner radius ~12**
+  (amended 2026-07-07 per user review against the real device/mechanical
+  drawing — the original ~34 read too round; the X's corners are noticeably
+  subtler than the OG's 28), and **no logo** — the X has a clean, unbranded
+  front.
 - **Bezels (amended 2026-07-07 from the 233×192 mm mechanical drawing the
   user provided):** side and top bezels 44 units, bottom bezel 88 units
   (~2× — houses the screen controller and touch bar). Body 888×732
