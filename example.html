@@ -72,6 +72,73 @@
                             </trmnl-frame>
                         </div>
 
+                        <!-- Model dropdown selector -->
+                        <div class="mt-6">
+                            <label
+                                for="model-select"
+                                class="block text-sm/6 font-medium text-gray-900"
+                            >
+                                Device Model
+                            </label>
+                            <div class="mt-2 grid grid-cols-1">
+                                <select
+                                    id="model-select"
+                                    class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                                    onchange="document.getElementById('trmnl-1').setAttribute('model', this.value);"
+                                >
+                                    <option value="og" selected>TRMNL (OG)</option>
+                                    <option value="x">TRMNL X</option>
+                                </select>
+                                <svg
+                                    class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+                                    viewBox="0 0 16 16"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        fill-rule="evenodd"
+                                        d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+                                        clip-rule="evenodd"
+                                    />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Color dropdown selector -->
+                        <div class="mt-6">
+                            <label
+                                for="color-select"
+                                class="block text-sm/6 font-medium text-gray-900"
+                            >
+                                Component Color Theme
+                            </label>
+                            <div class="mt-2 grid grid-cols-1">
+                                <select
+                                    id="color-select"
+                                    class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                                    onchange="document.getElementById('trmnl-1').setAttribute('color', this.value);"
+                                >
+                                    <option value="white" selected>White</option>
+                                    <option value="sage">Sage</option>
+                                    <option value="black">Black</option>
+                                    <option value="gray">Gray</option>
+                                    <option value="wood">Wood</option>
+                                </select>
+                                <svg
+                                    class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+                                    viewBox="0 0 16 16"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        fill-rule="evenodd"
+                                        d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+                                        clip-rule="evenodd"
+                                    />
+                                </svg>
+                            </div>
+                        </div>
+
                         <div class="mt-6">
                             <h3 class="text-lg font-medium text-gray-900 mb-3">
                                 Component Controls
@@ -128,95 +195,6 @@
                                 >
                                     setDark('auto')
                                 </button>
-                            </div>
-
-                            <!-- Color dropdown selector -->
-                            <div class="mt-6">
-                                <label
-                                    for="color-select"
-                                    class="block text-sm/6 font-medium text-gray-900"
-                                >
-                                    Component Color Theme
-                                </label>
-                                <div class="mt-2 grid grid-cols-1">
-                                    <select
-                                        id="color-select"
-                                        class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                                        onchange="document.getElementById('trmnl-1').setAttribute('color', this.value);"
-                                    >
-                                        <option value="white" selected>White</option>
-                                        <option value="sage">Sage</option>
-                                        <option value="black">Black</option>
-                                        <option value="gray">Gray</option>
-                                        <option value="wood">Wood</option>
-                                    </select>
-                                    <svg
-                                        class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
-                                        viewBox="0 0 16 16"
-                                        fill="currentColor"
-                                        aria-hidden="true"
-                                    >
-                                        <path
-                                            fill-rule="evenodd"
-                                            d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
-                                            clip-rule="evenodd"
-                                        />
-                                    </svg>
-                                </div>
-                                <div class="flex mt-3 space-x-3">
-                                    <div
-                                        class="h-6 w-6 rounded-full bg-trmnl-white border border-gray-300"
-                                        title="White"
-                                    ></div>
-                                    <div
-                                        class="h-6 w-6 rounded-full bg-trmnl-sage border border-gray-300"
-                                        title="Sage"
-                                    ></div>
-                                    <div
-                                        class="h-6 w-6 rounded-full bg-trmnl-black border border-gray-300"
-                                        title="Black"
-                                    ></div>
-                                    <div
-                                        class="h-6 w-6 rounded-full bg-trmnl-gray border border-gray-300"
-                                        title="Gray"
-                                    ></div>
-                                    <div
-                                        class="h-6 w-6 rounded-full bg-trmnl-wood border border-gray-300"
-                                        title="Wood"
-                                    ></div>
-                                </div>
-                            </div>
-
-                            <!-- Model dropdown selector -->
-                            <div class="mt-6">
-                                <label
-                                    for="model-select"
-                                    class="block text-sm/6 font-medium text-gray-900"
-                                >
-                                    Device Model
-                                </label>
-                                <div class="mt-2 grid grid-cols-1">
-                                    <select
-                                        id="model-select"
-                                        class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                                        onchange="document.getElementById('trmnl-1').setAttribute('model', this.value);"
-                                    >
-                                        <option value="og" selected>TRMNL (OG)</option>
-                                        <option value="x">TRMNL X</option>
-                                    </select>
-                                    <svg
-                                        class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
-                                        viewBox="0 0 16 16"
-                                        fill="currentColor"
-                                        aria-hidden="true"
-                                    >
-                                        <path
-                                            fill-rule="evenodd"
-                                            d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
-                                            clip-rule="evenodd"
-                                        />
-                                    </svg>
-                                </div>
                             </div>
                         </div>
                     </div>
