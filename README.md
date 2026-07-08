@@ -28,7 +28,7 @@ TRMNL is a versatile custom web component that provides a stylish terminal-like 
 Or import from CDN
 
 ```html
-<script src="https://usetrmnl.com/js/latest/trmnl-component.js" defer></script>
+<script src="https://trmnl.com/js/latest/trmnl-component.js" defer></script>
 ```
 
 ## Basic Usage
@@ -130,8 +130,8 @@ When inserting content directly, it's wrapped in a standard HTML template that i
 <!doctype html>
 <html lang="en">
     <head>
-        <link rel="stylesheet" href="https://usetrmnl.com/css/latest/plugins.css"/>
-        <script type="text/javascript" src="https://usetrmnl.com/css/latest/plugins.js"></script>
+        <link rel="stylesheet" href="https://trmnl.com/css/latest/plugins.css"/>
+        <script type="text/javascript" src="https://trmnl.com/js/latest/plugins.js"></script>
         <meta charset="utf-8" />
         <title>TRMNL</title>
     </head>
