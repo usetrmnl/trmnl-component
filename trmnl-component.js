@@ -372,6 +372,17 @@
       screen: { width: 1872, height: 1404, scale: 800 / 1872 },
       // framework device-size class applied to slotted .screen elements
       screenClass: "screen--v2",
+      // WebKit (real Safari + Playwright) mis-paints a scaled iframe living
+      // inside an SVG foreignObject: content bleeds past the bezel's clip.
+      // Proven fix (see docs/superpowers/specs/2026-07-07-multi-device-frames-design.md,
+      // "Safari/WebKit — outcome"): the X screen is rendered as a plain HTML
+      // overlay positioned on top of the SVG instead of foreignObject
+      // content. `overlay` gives the screen box's position in the SVG's
+      // viewBox coordinate space (group translate 48,32 + inset 30,30) plus
+      // the viewBox dimensions, so frameTemplate() can express the overlay's
+      // left/top/width/height as percentages that track the SVG's
+      // responsive `width: 100%` scaling.
+      overlay: { x: 78, y: 62, w: 800, h: 600, viewW: 956, viewH: 724 },
       colors: {},
       svg: `<svg width="956px" height="724px" viewBox="0 0 956 724" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>TRMNL X</title>
@@ -404,15 +415,6 @@
                             <use fill="#E4E2E1" fill-rule="evenodd" xlink:href="#x-screen"></use>
                             <use fill="black" fill-opacity="1" filter="url(#x-inner-shadow)" xlink:href="#x-screen"></use>
                         </g>
-
-                       <foreignObject class="node" x="30" y="30" width="800" height="600"
-                                      style="border-radius: 8px; opacity: 0.9; mix-blend-mode: darken;">
-                         <div id="${contentWrapperId}"
-                             style="position: static; width: 100%; height: 100%; max-width: 100%; max-height: 100%; overflow: hidden; border-radius: 8px;">
-                           <iframe id="${trmnlComponentIframeId}" src="about:blank"
-                                   style="display:block; position: static; border: none;"></iframe>
-                         </div>
-                       </foreignObject>
                    </g>
                </g>
                </svg>`,
@@ -427,6 +429,39 @@
         transform: scale(${model.screen.scale});
         transform-origin: 0 0;`
         : "";
+
+    // Models with an `overlay` (currently: x) render their screen content as
+    // a plain HTML div positioned on top of the SVG rather than as
+    // foreignObject content, working around a WebKit foreignObject paint
+    // bug (see MODELS.x.overlay comment / design doc). Models without an
+    // overlay (og) must emit byte-identical DOM/CSS to before this change.
+    const overlay = model.overlay;
+
+    const containerPositionCSS = overlay
+      ? `
+        position: relative;`
+      : "";
+
+    const overlayCSS = overlay
+      ? `
+      #${contentWrapperId} {
+        position: absolute;
+        left: ${(overlay.x / overlay.viewW) * 100}%;
+        top: ${(overlay.y / overlay.viewH) * 100}%;
+        width: ${(overlay.w / overlay.viewW) * 100}%;
+        height: ${(overlay.h / overlay.viewH) * 100}%;
+        overflow: hidden;
+        border-radius: 8px;
+        opacity: 0.9;
+        mix-blend-mode: darken;
+      }`
+      : "";
+
+    const overlayMarkup = overlay
+      ? `
+    <div id="${contentWrapperId}"><iframe id="${trmnlComponentIframeId}" src="about:blank" style="display:block; border:none;"></iframe></div>`
+      : "";
+
     return `
     <style>
       :host {
@@ -435,7 +470,7 @@
       }
       #${containerId} {
         width: 100%;
-        height: auto;
+        height: auto;${containerPositionCSS}
       }
       svg {
         width: 100%;
@@ -456,10 +491,10 @@
       #${trmnlComponentIframeId}.dark-mode {
         filter: invert(1) brightness(0.9) sepia(25%) contrast(0.75);
         opacity:90%;
-      }
+      }${overlayCSS}
     </style>
     <div id="${containerId}">
-    ${model.svg}
+    ${model.svg}${overlayMarkup}
     </div>
   `;
   }
@@ -514,6 +549,34 @@
       this.updateContainerAttribute("style", this.getAttribute("style"));
       this.updateColors();
       this._updateDarkMode();
+      this._setupScreenScaler();
+    }
+
+    // Models rendered via an HTML overlay (see MODELS.x.overlay) size their
+    // wrapper div responsively (percentages of the SVG viewBox), but the
+    // iframe's visual scale is a CSS transform and can't derive itself from
+    // a percentage-sized ancestor. A ResizeObserver keeps the iframe's
+    // scale in sync with the wrapper's actual rendered width. The CSS
+    // scale set in frameTemplate() gives a correct first paint before this
+    // observer's first callback fires.
+    _setupScreenScaler() {
+      if (this._screenResizeObserver) {
+        this._screenResizeObserver.disconnect();
+        this._screenResizeObserver = null;
+      }
+
+      const model = MODELS[this._model];
+      if (!model.overlay || !this._iframe) return;
+
+      const wrapper = this.shadowRoot.querySelector(`#${contentWrapperId}`);
+      if (!wrapper) return;
+
+      this._screenResizeObserver = new ResizeObserver(() => {
+        const width = wrapper.clientWidth;
+        if (!width) return;
+        this._iframe.style.transform = `scale(${width / MODELS[this._model].screen.width})`;
+      });
+      this._screenResizeObserver.observe(wrapper);
     }
 
     _injectContent(container) {
@@ -694,12 +757,24 @@
 
       // Set up the mutation observer to handle content changes
       this._setupMutationObserver();
+
+      // Re-attach case: disconnectedCallback tears down the screen-scaler
+      // ResizeObserver, so reconnecting the element must re-establish it
+      // even if the model attribute is unchanged (in which case _setModel's
+      // early-return means _renderFrame, which also calls this, won't run).
+      this._setupScreenScaler();
     }
 
     disconnectedCallback() {
       // Clean up the mutation observer when element is removed
       if (this._observer) {
         this._observer.disconnect();
+      }
+
+      // Clean up the screen-scaler ResizeObserver (overlay models only)
+      if (this._screenResizeObserver) {
+        this._screenResizeObserver.disconnect();
+        this._screenResizeObserver = null;
       }
 
       // Remove media query listener
