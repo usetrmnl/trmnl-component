@@ -13,7 +13,8 @@ TRMNL is a versatile custom web component that provides a stylish terminal-like 
 ## Features
 
 - **Multiple Content Sources**: Load content from external URLs or inject HTML directly
-- **Custom Color Themes**: Choose from white, black, and mint themes
+- **Custom Color Themes**: Choose from white, black, sage, gray, and wood themes
+- **Multiple Device Frames**: Render the original TRMNL or the TRMNL X via the `model` attribute
 - **Responsive Design**: Automatically adapts to its container size
 - **JavaScript API**: Programmatically control content and appearance
 - **CSS Scoping**: Content is isolated in an iframe for better style encapsulation
@@ -27,7 +28,7 @@ TRMNL is a versatile custom web component that provides a stylish terminal-like 
 Or import from CDN
 
 ```html
-<script src="https://usetrmnl.com/js/latest/trmnl-component.js" defer></script>
+<script src="https://trmnl.com/js/latest/trmnl-component.js" defer></script>
 ```
 
 ## Basic Usage
@@ -38,10 +39,29 @@ Or import from CDN
 <trmnl-frame src="https://example.com/content.html"></trmnl-frame>
 ```
 
+### TRMNL X Frame
+
+```html
+<trmnl-frame model="x">
+  <div class="screen">
+    <div class="view view--full">
+      <h1>Rendered at TRMNL X size</h1>
+    </div>
+  </div>
+</trmnl-frame>
+```
+
+Slotted content is automatically rendered at the X's screen size: the
+component adds the framework's `screen--v2` class to your `.screen`
+elements (1040×780 logical, 1872×1404 physical at pixel-ratio 1.8).
+External `src` pages style themselves — they load in a 1872×1404 viewport
+and must size their own markup (e.g. include plugins.css and use
+`class="screen screen--v2"`).
+
 ### With Direct HTML Content
 
 ```html
-<trmnl-frame color="mint">
+<trmnl-frame color="sage">
   <div class="screen">
     <div class="view">
       <h1>My Custom Content</h1>
@@ -68,7 +88,8 @@ Or import from CDN
 | Attribute | Description | Default |
 |-----------|-------------|---------|
 | `src` | URL to load in the iframe | - |
-| `color` | Color theme (white, black, mint) | `"white"` |
+| `color` | Color theme (white, black, sage, gray, wood; `mint` is a deprecated alias for `sage`) | `"white"` |
+| `model` | Device frame to render (`og`, `x`) | `"og"` |
 | `class` | CSS classes to apply to the component | - |
 | `style` | Inline styles to apply to the component | - |
 
@@ -80,6 +101,7 @@ Or import from CDN
 | `clearContent()` | Clears all content from the component |
 | `setSrc(url)` | Sets the URL to load in the iframe |
 | `getHTML()` | Gets the current HTML content |
+| `setModel(model)` | Sets the device frame (`og` or `x`) |
 
 ## JavaScript Usage
 
@@ -108,8 +130,8 @@ When inserting content directly, it's wrapped in a standard HTML template that i
 <!doctype html>
 <html lang="en">
     <head>
-        <link rel="stylesheet" href="https://usetrmnl.com/css/latest/plugins.css"/>
-        <script type="text/javascript" src="https://usetrmnl.com/css/latest/plugins.js"></script>
+        <link rel="stylesheet" href="https://trmnl.com/css/latest/plugins.css"/>
+        <script type="text/javascript" src="https://trmnl.com/js/latest/plugins.js"></script>
         <meta charset="utf-8" />
         <title>TRMNL</title>
     </head>

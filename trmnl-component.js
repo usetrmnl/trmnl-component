@@ -1,14 +1,14 @@
 (function () {
   // Define the HTML template as a string.
-  // We wrap the SVG in a container <div id="container"> to allow forwarding
-  // of the host element's "class" and "style" attributes.
+  // The SVG is wrapped in a container <div> that also anchors positioning
+  // for overlay-based models (see MODELS.x.overlay).
 
   let mainContentId = `main-content-${Math.random().toString(36).substring(2)}`;
   let containerId = `container-${Math.random().toString(36).substring(2)}`;
   let contentWrapperId = `container-wrapper-${Math.random().toString(36).substring(2)}`;
   let trmnlComponentIframeId = `trmnl-component-iframe-${Math.random().toString(36).substring(2)}`;
 
-  const colors = {
+  const baseColors = {
     white: {
       start: "#F7F6F6",
       end: "#E9E9E9",
@@ -19,7 +19,7 @@
       end: "#313131",
       logo: "#595959",
     },
-    mint: {
+    sage: {
       start: "#D9DED0",
       end: "#CFD3C8",
       logo: "#D8DCD1",
@@ -30,17 +30,22 @@
       logo: "#595959",
     },
     wood: {
-      start: "#f9e3cb",
-      end: "#ecd4bc",
-      logo: "#fdefd5",
+      start: "#c4ac95",
+      end: "#c7af96",
+      logo: "#d3c1b0",
     }
+  };
+
+  // Deprecated color names, mapped to their canonical replacements.
+  const colorAliases = {
+    mint: "sage",
   };
 
   const contentWrapperTemplate = `<!doctype html>
 <html lang="en">
     <head>
-        <link rel="stylesheet" href="https://usetrmnl.com/css/latest/plugins.css"/>
-        <script type="text/javascript" src="https://usetrmnl.com/js/latest/plugins.js"></script>
+        <link rel="stylesheet" href="https://trmnl.com/css/latest/plugins.css"/>
+        <script type="text/javascript" src="https://trmnl.com/js/latest/plugins.js"></script>
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
         <meta charset="utf-8" />
         <title>TRMNL</title>
@@ -50,39 +55,13 @@
     </body>
 </html>`;
 
-  const templateHTML = `
-    <style>
-      :host {
-        display: inline-block;
-        width: auto;
-      }
-      #${containerId} {
-        width: 100%;
-        height: auto;
-      }
-      svg {
-        width: 100%;
-        height: auto;
-        display: block;
-      }
-      #${mainContentId} {
-        width: 100%;
-        height: auto;
-        display: block;
-        background-opacity: 0;
-      }
-      #${trmnlComponentIframeId} {
-        border: none !important;
-        width: 800px;
-        height: 480px;
-      }
-      #${trmnlComponentIframeId}.dark-mode {
-        filter: invert(1) brightness(0.9) sepia(25%) contrast(0.75);
-        opacity:90%;
-      }
-    </style>
-    <div id="${containerId}">
-    <svg width="950px" height="639px" viewBox="0 0 950 639" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  // Device model registry. Each model owns its frame SVG, the native
+  // resolution its screen content renders at, and any palette overrides.
+  const MODELS = {
+    og: {
+      screen: { width: 800, height: 480, scale: 1 },
+      colors: {},
+      svg: `    <svg width="950px" height="639px" viewBox="0 0 950 639" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>TRMNL</title>
                 <defs>
                     <linearGradient x1="50%" y1="0.295017483%" x2="50%" y2="98.7079327%" id="linearGradient-1">
@@ -381,9 +360,148 @@
                        </g>
                    </g>
                </g>
-               </svg>
-            </div>
+               </svg>`,
+    },
+    x: {
+      // plugins.css's .screen--v2 lays out content at logical 1040x780 then
+      // applies its own internal `transform: scale(1.8)` (pixel-ratio) to
+      // reach physical 1872x1404. An <iframe> always clips to its own CSS
+      // box (that box defines its internal viewport), so the box here must
+      // be sized to that physical output — 1040x780 would only show the
+      // top-left slice of the scaled content and clip the title bar.
+      screen: { width: 1872, height: 1404, scale: 800 / 1872 },
+      // framework device-size class applied to slotted .screen elements
+      screenClass: "screen--v2",
+      // WebKit (real Safari + Playwright) mis-paints a scaled iframe living
+      // inside an SVG foreignObject: content bleeds past the bezel's clip.
+      // Proven fix (see docs/superpowers/specs/2026-07-07-multi-device-frames-design.md,
+      // "Safari/WebKit — outcome"): the X screen is rendered as a plain HTML
+      // overlay positioned on top of the SVG instead of foreignObject
+      // content. `overlay` gives the screen box's position in the SVG's
+      // viewBox coordinate space (group translate 48,32 + inset 44,44) plus
+      // the viewBox dimensions, so frameTemplate() can express the overlay's
+      // left/top/width/height as percentages that track the SVG's
+      // responsive `width: 100%` scaling.
+      //
+      // Bezel geometry per mechanical drawing (outer 233x192mm): side/top
+      // bezel is 44 units, bottom bezel is 2x that (88 units) to house the
+      // screen controller and touch bar. Body 888x732, screen 800x600 fixed.
+      overlay: { x: 92, y: 76, w: 800, h: 600, viewW: 984, viewH: 796 },
+      colors: {},
+      svg: `<svg width="984px" height="796px" viewBox="0 0 984 796" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <title>TRMNL X</title>
+                <defs>
+                    <linearGradient x1="50%" y1="0.295017483%" x2="50%" y2="98.7079327%" id="x-gradient">
+                        <stop id="start" stop-color="#F7F6F6" offset="0%"></stop>
+                        <stop id="end" stop-color="#E9E9E9" offset="100%"></stop>
+                    </linearGradient>
+                    <rect id="x-body" x="0" y="0" width="888" height="732" rx="12"></rect>
+                    <filter x="-1.3%" y="-1.7%" width="102.7%" height="104.0%" filterUnits="objectBoundingBox" id="x-drop-shadow">
+                        <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+                        <feGaussianBlur stdDeviation="3.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                        <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.342083698 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+                    </filter>
+                    <rect id="x-screen" x="44" y="44" width="800" height="600" rx="3"></rect>
+                    <filter x="-0.5%" y="-0.8%" width="101.0%" height="101.7%" filterUnits="objectBoundingBox" id="x-inner-shadow">
+                        <feGaussianBlur stdDeviation="3" in="SourceAlpha" result="shadowBlurInner1"></feGaussianBlur>
+                        <feOffset dx="0" dy="2" in="shadowBlurInner1" result="shadowOffsetInner1"></feOffset>
+                        <feComposite in="shadowOffsetInner1" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner1"></feComposite>
+                        <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowInnerInner1"></feColorMatrix>
+                    </filter>
+                </defs>
+                <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g id="Group" transform="translate(48, 32)">
+                        <g id="Body">
+                            <use fill="black" fill-opacity="1" filter="url(#x-drop-shadow)" xlink:href="#x-body"></use>
+                            <use fill="url(#x-gradient)" fill-rule="evenodd" xlink:href="#x-body"></use>
+                        </g>
+                        <g id="Screen">
+                            <use fill="#E4E2E1" fill-rule="evenodd" xlink:href="#x-screen"></use>
+                            <use fill="black" fill-opacity="1" filter="url(#x-inner-shadow)" xlink:href="#x-screen"></use>
+                        </g>
+                   </g>
+               </g>
+               </svg>`,
+    },
+  };
+
+  function frameTemplate(modelName) {
+    const model = MODELS[modelName];
+    const scaleCSS =
+      model.screen.scale !== 1
+        ? `
+        transform: scale(${model.screen.scale});
+        transform-origin: 0 0;`
+        : "";
+
+    // Models with an `overlay` (currently: x) render their screen content as
+    // a plain HTML div positioned on top of the SVG rather than as
+    // foreignObject content, working around a WebKit foreignObject paint
+    // bug (see MODELS.x.overlay comment / design doc). Models without an
+    // overlay (og) must emit byte-identical DOM/CSS to before this change.
+    const overlay = model.overlay;
+
+    const containerPositionCSS = overlay
+      ? `
+        position: relative;`
+      : "";
+
+    const overlayCSS = overlay
+      ? `
+      #${contentWrapperId} {
+        position: absolute;
+        left: ${(overlay.x / overlay.viewW) * 100}%;
+        top: ${(overlay.y / overlay.viewH) * 100}%;
+        width: ${(overlay.w / overlay.viewW) * 100}%;
+        height: ${(overlay.h / overlay.viewH) * 100}%;
+        overflow: hidden;
+        border-radius: 3px;
+        opacity: 0.9;
+        mix-blend-mode: darken;
+      }`
+      : "";
+
+    const overlayMarkup = overlay
+      ? `
+    <div id="${contentWrapperId}"><iframe id="${trmnlComponentIframeId}" src="about:blank" style="display:block; border:none;"></iframe></div>`
+      : "";
+
+    return `
+    <style>
+      :host {
+        display: inline-block;
+        width: auto;
+      }
+      #${containerId} {
+        width: 100%;
+        height: auto;${containerPositionCSS}
+      }
+      svg {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      #${mainContentId} {
+        width: 100%;
+        height: auto;
+        display: block;
+        background-opacity: 0;
+      }
+      #${trmnlComponentIframeId} {
+        border: none !important;
+        width: ${model.screen.width}px;
+        height: ${model.screen.height}px;${scaleCSS}
+      }
+      #${trmnlComponentIframeId}.dark-mode {
+        filter: invert(1) brightness(0.9) sepia(25%) contrast(0.75);
+        opacity:90%;
+      }${overlayCSS}
+    </style>
+    <div id="${containerId}">
+    ${model.svg}${overlayMarkup}
+    </div>
   `;
+  }
 
   class TRMNL extends HTMLElement {
     constructor() {
@@ -395,26 +513,7 @@
       this._htmlContent = ""; // Store HTML content
       this._darkMode = null; // Store dark mode setting
 
-      // Attach a shadow root and append the template content
-      const shadow = this.attachShadow({ mode: "open" });
-      const template = document.createElement("template");
-      template.innerHTML = templateHTML;
-      shadow.appendChild(template.content.cloneNode(true));
-
-      // Get reference to the iframe for later use
-      this._iframe = this.shadowRoot.querySelector(
-        `#${trmnlComponentIframeId}`,
-      );
-
-      // Setup iframe load handler once
-      if (this._iframe) {
-        this._iframe.onload = () => {
-          this._handleIframeLoaded();
-        };
-      }
-
-      // Process any slotted content
-      this._processSlottedContent();
+      this._model = "og"; // Default device model
 
       // Initialize dark mode media query listener if needed
       this._darkModeMediaQuery = window.matchMedia(
@@ -422,6 +521,78 @@
       );
       this._darkModeMediaQuery.addEventListener("change", () => {
         this._updateDarkMode();
+      });
+
+      // Attach a shadow root and stamp the default frame
+      this.attachShadow({ mode: "open" });
+      this._renderFrame();
+
+      // Process any slotted content
+      this._processSlottedContent();
+    }
+
+    _renderFrame() {
+      const template = document.createElement("template");
+      template.innerHTML = frameTemplate(this._model);
+      this.shadowRoot.replaceChildren(template.content.cloneNode(true));
+
+      // Get reference to the iframe for later use
+      this._iframe = this.shadowRoot.querySelector(
+        `#${trmnlComponentIframeId}`,
+      );
+
+      // Setup iframe load handler
+      if (this._iframe) {
+        this._iframe.onload = () => {
+          this._handleIframeLoaded();
+        };
+      }
+
+      // Re-apply state that lives in the frame's DOM
+      this.updateColors();
+      this._updateDarkMode();
+      this._setupScreenScaler();
+    }
+
+    // Models rendered via an HTML overlay (see MODELS.x.overlay) size their
+    // wrapper div responsively (percentages of the SVG viewBox), but the
+    // iframe's visual scale is a CSS transform and can't derive itself from
+    // a percentage-sized ancestor. A ResizeObserver keeps the iframe's
+    // scale in sync with the wrapper's actual rendered width. The CSS
+    // scale set in frameTemplate() gives a correct first paint before this
+    // observer's first callback fires.
+    _setupScreenScaler() {
+      if (this._screenResizeObserver) {
+        this._screenResizeObserver.disconnect();
+        this._screenResizeObserver = null;
+      }
+
+      const model = MODELS[this._model];
+      if (!model.overlay || !this._iframe) return;
+
+      const wrapper = this.shadowRoot.querySelector(`#${contentWrapperId}`);
+      if (!wrapper) return;
+
+      this._screenResizeObserver = new ResizeObserver(() => {
+        const width = wrapper.clientWidth;
+        if (!width) return;
+        this._iframe.style.transform = `scale(${width / MODELS[this._model].screen.width})`;
+      });
+      this._screenResizeObserver.observe(wrapper);
+    }
+
+    _injectContent(container) {
+      container.innerHTML = this._htmlContent;
+      this._applyScreenClass(container);
+    }
+
+    _applyScreenClass(container) {
+      // Framework device-size class (e.g. screen--v2 for the X): applied to
+      // the injected DOM only — the stored raw HTML stays unmutated.
+      const screenClass = MODELS[this._model].screenClass;
+      if (!screenClass) return;
+      container.querySelectorAll(".screen").forEach((el) => {
+        el.classList.add(screenClass);
       });
     }
 
@@ -443,40 +614,49 @@
             iframeDoc.close();
 
             // Step 2: Wait for the contentWrapperTemplate to parse & render
-            this._iframe.contentWindow.addEventListener(
-              "DOMContentLoaded",
-              () => {
-                const container = iframeDoc.getElementById(mainContentId);
-                if (!container) {
-                  console.warn(
-                    `${mainContentId} container not found inside iframe`,
-                  );
-                  return;
-                }
-
-                // Step 3: Apply the transition & inject content
-                // Check if not Safari and if startViewTransition is available
-                const isSafari = /^((?!chrome|android).)*safari/i.test(
-                  navigator.userAgent,
+            const injectWhenParsed = () => {
+              const container = iframeDoc.getElementById(mainContentId);
+              if (!container) {
+                console.warn(
+                  `${mainContentId} container not found inside iframe`,
                 );
-                if (
-                  !isSafari &&
-                  typeof iframeDoc.startViewTransition === "function"
-                ) {
-                  iframeDoc.startViewTransition(() => {
-                    container.innerHTML = this._htmlContent;
-                  });
-                } else {
-                  container.innerHTML = this._htmlContent;
-                }
+                return;
+              }
 
-                console.log(
-                  "Dynamic content injected" +
-                    (!isSafari ? " with View Transition" : ""),
-                );
-              },
-              { once: true },
-            );
+              // Step 3: Apply the transition & inject content
+              // Check if not Safari and if startViewTransition is available
+              const isSafari = /^((?!chrome|android).)*safari/i.test(
+                navigator.userAgent,
+              );
+              if (
+                !isSafari &&
+                typeof iframeDoc.startViewTransition === "function"
+              ) {
+                iframeDoc.startViewTransition(() => {
+                  this._injectContent(container);
+                });
+              } else {
+                this._injectContent(container);
+              }
+
+              console.log(
+                "Dynamic content injected" +
+                  (!isSafari ? " with View Transition" : ""),
+              );
+            };
+
+            // When the shell's subresources come from cache, parsing can
+            // finish before this code runs — DOMContentLoaded has already
+            // fired and a listener would never be called.
+            if (iframeDoc.readyState === "loading") {
+              this._iframe.contentWindow.addEventListener(
+                "DOMContentLoaded",
+                injectWhenParsed,
+                { once: true },
+              );
+            } else {
+              injectWhenParsed();
+            }
 
             const isSafari = /^((?!chrome|android).)*safari/i.test(
               navigator.userAgent,
@@ -490,7 +670,7 @@
 
               setTimeout(() => {
                 if (container && this._htmlContent) {
-                  container.innerHTML = this._htmlContent;
+                  this._injectContent(container);
                   console.log(
                     "Applied additional Safari-specific content update",
                   );
@@ -504,8 +684,30 @@
       }
     }
 
+    _setModel(model) {
+      const requested = model || "og";
+      let resolved = requested;
+      if (!MODELS[resolved]) {
+        console.warn(`Model "${requested}" not found, defaulting to og`);
+        resolved = "og";
+      }
+      if (resolved === this._model) return;
+
+      this._model = resolved;
+      this._renderFrame();
+      this._reloadContent();
+    }
+
+    _reloadContent() {
+      if (this._contentMode === "external" && this._src) {
+        this.updateIframe();
+      } else if (this._contentMode === "internal" && this._htmlContent) {
+        this._prepareThenInjectHTML();
+      }
+    }
+
     static get observedAttributes() {
-      return ["src", "class", "style", "color", "dark"];
+      return ["src", "color", "dark", "model"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -516,19 +718,24 @@
         this._src = newValue;
         this._contentMode = "external";
         this.updateIframe();
-      } else if (name === "class" || name === "style") {
-        this.updateContainerAttribute(name, newValue);
       } else if (name === "color") {
         this._color = newValue || "white"; // Default to white if not specified
         this.updateColors();
       } else if (name === "dark") {
         this._darkMode = newValue;
         this._updateDarkMode();
+      } else if (name === "model") {
+        this._setModel(newValue);
       }
     }
 
     connectedCallback() {
       console.log("TRMNL connectedCallback invoked.");
+
+      // Initialize device model
+      if (this.hasAttribute("model")) {
+        this._setModel(this.getAttribute("model"));
+      }
 
       // Process any existing content from innerHTML
       this._processSlottedContent();
@@ -540,10 +747,6 @@
         this._contentMode = "external";
         this.updateIframe();
       }
-
-      // Initialize container attributes for class and style
-      this.updateContainerAttribute("class", this.getAttribute("class"));
-      this.updateContainerAttribute("style", this.getAttribute("style"));
 
       // Initialize color
       if (this.hasAttribute("color")) {
@@ -559,12 +762,24 @@
 
       // Set up the mutation observer to handle content changes
       this._setupMutationObserver();
+
+      // Re-attach case: disconnectedCallback tears down the screen-scaler
+      // ResizeObserver, so reconnecting the element must re-establish it
+      // even if the model attribute is unchanged (in which case _setModel's
+      // early-return means _renderFrame, which also calls this, won't run).
+      this._setupScreenScaler();
     }
 
     disconnectedCallback() {
       // Clean up the mutation observer when element is removed
       if (this._observer) {
         this._observer.disconnect();
+      }
+
+      // Clean up the screen-scaler ResizeObserver (overlay models only)
+      if (this._screenResizeObserver) {
+        this._screenResizeObserver.disconnect();
+        this._screenResizeObserver = null;
       }
 
       // Remove media query listener
@@ -649,25 +864,32 @@
       });
     }
 
-    updateContainerAttribute(name, value) {
-      const container = this.shadowRoot.querySelector("#container");
-      if (container) {
-        if (value !== null) {
-          container.setAttribute(name, value);
-        } else {
-          container.removeAttribute(name);
-        }
-      }
-    }
-
     updateColors() {
-      // Validate that the color exists in our colors object
-      if (!colors[this._color]) {
+      if (colorAliases[this._color]) {
+        // Element upgrade invokes updateColors() twice synchronously
+        // (attributeChangedCallback + connectedCallback); dedup those,
+        // but warn again on any later reassignment.
+        if (!this._deprecationWarnPending) {
+          console.warn(
+            `Color "${this._color}" is deprecated; use "${colorAliases[this._color]}" instead`,
+          );
+          this._deprecationWarnPending = true;
+          queueMicrotask(() => {
+            this._deprecationWarnPending = false;
+          });
+        }
+        this._color = colorAliases[this._color];
+      }
+
+      const palette = { ...baseColors, ...MODELS[this._model].colors };
+
+      // Validate that the color exists in our palette
+      if (!palette[this._color]) {
         console.warn(`Color "${this._color}" not found, defaulting to white`);
         this._color = "white";
       }
 
-      const colorSet = colors[this._color];
+      const colorSet = palette[this._color];
 
       // Update the gradient stops
       const startStop = this.shadowRoot.querySelector("#start");
@@ -693,12 +915,21 @@
     // JavaScript API methods
 
     /**
-     * Set the color theme: 'white', 'black', or 'mint'
+     * Set the color theme: 'white', 'black', 'sage', 'gray', or 'wood'
      * @param {string} color - The color theme to use
      */
     setColor(color) {
       this._color = color;
       this.updateColors();
+      return this; // For chaining
+    }
+
+    /**
+     * Set the device model: 'og' or 'x'
+     * @param {string} model - The device frame to render
+     */
+    setModel(model) {
+      this._setModel(model);
       return this; // For chaining
     }
 
