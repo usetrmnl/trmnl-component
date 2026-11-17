@@ -374,8 +374,7 @@
       screenClass: "screen--v2",
       // WebKit (real Safari + Playwright) mis-paints a scaled iframe living
       // inside an SVG foreignObject: content bleeds past the bezel's clip.
-      // Proven fix (see docs/superpowers/specs/2026-07-07-multi-device-frames-design.md,
-      // "Safari/WebKit — outcome"): the X screen is rendered as a plain HTML
+      // Proven fix: the X screen is rendered as a plain HTML
       // overlay positioned on top of the SVG instead of foreignObject
       // content. `overlay` gives the screen box's position in the SVG's
       // viewBox coordinate space (group translate 48,32 + inset 44,44) plus
@@ -423,6 +422,108 @@
                </g>
                </svg>`,
     },
+    frame: {
+      // TRMNL Frame: 31" colour e-paper picture frame, 2560x1440, landscape
+      // only (this component has no orientation support for any model).
+      // The Framework's .screen--frame lays out content at 2560x1440 with
+      // pixel-ratio 1, so the iframe box is the physical size and the
+      // scaler shrinks it onto the 1280x720 window of the SVG (scale 0.5 at
+      // 1:1 viewBox, tracked by the ResizeObserver like the X).
+      screen: { width: 2560, height: 1440, scale: 0.5 },
+      // Classes as the real device reports them. screen--md is a known
+      // TRMNL bug (the Frame is not a medium screen) but it is what
+      // content sees on the device, so the preview applies it too.
+      // screen--color-6a is the 6-colour e-paper palette of the Frame.
+      screenClass: "screen--frame screen--md screen--color-6a",
+      // Window = 1280x720 viewBox units: group translate (48,32) + moulding
+      // 60 = 108,92, directly inside the wood (no border). viewBox 1496x904.
+      overlay: { x: 108, y: 92, w: 1280, h: 720, viewW: 1496, viewH: 904, radius: 0 },
+      // The gradient colours the flat solid-wood moulding (barely lit from
+      // the top left); the four woods are the ones TRMNL sells.
+      colors: {
+        "white-oak": { start: "#cda67c", end: "#c09a70", logo: "#d3c1b0" },
+        cherry: { start: "#b87a45", end: "#ab6e3c", logo: "#d3c1b0" },
+        sapele: { start: "#7a4429", end: "#6e3c23", logo: "#d3c1b0" },
+        walnut: { start: "#4a2e25", end: "#3f261f", logo: "#d3c1b0" },
+        // Compatibility alias of white-oak (the old "wood").
+        wood: { start: "#cda67c", end: "#c09a70", logo: "#d3c1b0" },
+      },
+      // The Frame is only sold in these four woods: its palette replaces
+      // the shared one (white, black, sage, gray do not apply) and an
+      // unknown colour, including the component default "white", falls
+      // back to defaultColor.
+      exclusiveColors: true,
+      defaultColor: "white-oak",
+      svg: `<svg width="1496px" height="904px" viewBox="0 0 1496 904" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <title>TRMNL Frame</title>
+                <defs>
+                    <linearGradient id="frame-gradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1400" y2="840">
+                        <stop id="start" stop-color="#cda67c" offset="0%"></stop>
+                        <stop id="end" stop-color="#c09a70" offset="100%"></stop>
+                    </linearGradient>
+                    <linearGradient id="frame-lit" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.05"></stop><stop offset="1" stop-color="#fff" stop-opacity="0.02"></stop></linearGradient>
+                    <linearGradient id="frame-lit-left" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0.04"></stop><stop offset="1" stop-color="#fff" stop-opacity="0.01"></stop></linearGradient>
+                    <linearGradient id="frame-dark-bottom" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0.03"></stop><stop offset="1" stop-color="#000" stop-opacity="0.07"></stop></linearGradient>
+                    <linearGradient id="frame-dark-right" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity="0.04"></stop><stop offset="1" stop-color="#000" stop-opacity="0.08"></stop></linearGradient>
+                    <filter id="frame-grain-h" x="0" y="0" width="100%" height="100%">
+                        <feTurbulence type="fractalNoise" baseFrequency="0.004 0.11" numOctaves="2" seed="7"></feTurbulence>
+                        <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.6 0 0 0 -0.6"></feColorMatrix>
+                    </filter>
+                    <filter id="frame-grain-v" x="0" y="0" width="100%" height="100%">
+                        <feTurbulence type="fractalNoise" baseFrequency="0.11 0.004" numOctaves="2" seed="11"></feTurbulence>
+                        <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.6 0 0 0 -0.6"></feColorMatrix>
+                    </filter>
+                    <clipPath id="frame-clip-top"><polygon points="0,0 1400,0 1340,60 60,60"></polygon></clipPath>
+                    <clipPath id="frame-clip-right"><polygon points="1400,0 1400,840 1340,780 1340,60"></polygon></clipPath>
+                    <clipPath id="frame-clip-bottom"><polygon points="1400,840 0,840 60,780 1340,780"></polygon></clipPath>
+                    <clipPath id="frame-clip-left"><polygon points="0,840 0,0 60,60 60,780"></polygon></clipPath>
+                    <filter x="-3%" y="-3%" width="106%" height="108%" filterUnits="objectBoundingBox" id="frame-drop-shadow">
+                        <feOffset dx="0" dy="8" in="SourceAlpha" result="o"></feOffset>
+                        <feGaussianBlur stdDeviation="12" in="o" result="b"></feGaussianBlur>
+                        <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.35 0" type="matrix" in="b"></feColorMatrix>
+                    </filter>
+                    <rect id="frame-body" x="0" y="0" width="1400" height="840"></rect>
+                </defs>
+                <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g id="Group" transform="translate(48, 32)">
+                        <use fill="black" fill-opacity="1" filter="url(#frame-drop-shadow)" xlink:href="#frame-body"></use>
+                        <!-- Screen area (the live overlay sits on it); nothing drawn between it and the wood.
+                             Wood underneath and the light panel colour inset 2 units, so the
+                             overlay's antialiased edge never shows the light colour (square
+                             corners, radius 0, for the same reason). -->
+                        <use fill="url(#frame-gradient)" xlink:href="#frame-body"></use>
+                        <rect x="62" y="62" width="1276" height="716" fill="#E4E2E1"></rect>
+                        <!-- Moulding: flat square-profile wood, four mitred pieces, grain along each piece -->
+                        <g id="Moulding">
+                            <g clip-path="url(#frame-clip-top)">
+                                <use fill="url(#frame-gradient)" xlink:href="#frame-body"></use>
+                                <rect x="0" y="0" width="1400" height="60" filter="url(#frame-grain-h)" opacity="0.16"></rect>
+                                <rect x="0" y="0" width="1400" height="60" fill="url(#frame-lit)"></rect>
+                            </g>
+                            <g clip-path="url(#frame-clip-left)">
+                                <use fill="url(#frame-gradient)" xlink:href="#frame-body"></use>
+                                <rect x="0" y="0" width="60" height="840" filter="url(#frame-grain-v)" opacity="0.16"></rect>
+                                <rect x="0" y="0" width="60" height="840" fill="url(#frame-lit-left)"></rect>
+                            </g>
+                            <g clip-path="url(#frame-clip-right)">
+                                <use fill="url(#frame-gradient)" xlink:href="#frame-body"></use>
+                                <rect x="1340" y="0" width="60" height="840" filter="url(#frame-grain-v)" opacity="0.16"></rect>
+                                <rect x="1340" y="0" width="60" height="840" fill="url(#frame-dark-right)"></rect>
+                            </g>
+                            <g clip-path="url(#frame-clip-bottom)">
+                                <use fill="url(#frame-gradient)" xlink:href="#frame-body"></use>
+                                <rect x="0" y="780" width="1400" height="60" filter="url(#frame-grain-h)" opacity="0.16"></rect>
+                                <rect x="0" y="780" width="1400" height="60" fill="url(#frame-dark-bottom)"></rect>
+                            </g>
+                            <!-- Fine mitre seams, stopping 2 units short of the screen so no seam pixel sits at the inner corner -->
+                            <g stroke="black" stroke-opacity="0.38" stroke-width="1.3" fill="none"><path d="M0,0 L58,58 M1400,0 L1342,58 M1400,840 L1342,782 M0,840 L58,782"></path></g>
+                            <g stroke="white" stroke-opacity="0.18" stroke-width="1" fill="none" transform="translate(1,0)"><path d="M0,0 L58,58 M1400,0 L1342,58 M1400,840 L1342,782 M0,840 L58,782"></path></g>
+                        </g>
+                    </g>
+                </g>
+               </svg>`,
+
+    },
   };
 
   function frameTemplate(modelName) {
@@ -455,7 +556,7 @@
         width: ${(overlay.w / overlay.viewW) * 100}%;
         height: ${(overlay.h / overlay.viewH) * 100}%;
         overflow: hidden;
-        border-radius: 3px;
+        border-radius: ${overlay.radius ?? 3}px;
         opacity: 0.9;
         mix-blend-mode: darken;
       }`
@@ -589,10 +690,12 @@
     _applyScreenClass(container) {
       // Framework device-size class (e.g. screen--v2 for the X): applied to
       // the injected DOM only — the stored raw HTML stays unmutated.
+      // May hold several space-separated classes (frame).
       const screenClass = MODELS[this._model].screenClass;
       if (!screenClass) return;
+      const classes = screenClass.split(/\s+/).filter(Boolean);
       container.querySelectorAll(".screen").forEach((el) => {
-        el.classList.add(screenClass);
+        el.classList.add(...classes);
       });
     }
 
@@ -881,12 +984,22 @@
         this._color = colorAliases[this._color];
       }
 
-      const palette = { ...baseColors, ...MODELS[this._model].colors };
+      const model = MODELS[this._model];
+      const palette = model.exclusiveColors
+        ? model.colors
+        : { ...baseColors, ...model.colors };
 
       // Validate that the color exists in our palette
       if (!palette[this._color]) {
-        console.warn(`Color "${this._color}" not found, defaulting to white`);
-        this._color = "white";
+        const fallback = model.defaultColor || "white";
+        // "white" is the element's own default, not a user mistake, on
+        // models that replace the palette.
+        if (!(model.exclusiveColors && this._color === "white")) {
+          console.warn(
+            `Color "${this._color}" not found, defaulting to ${fallback}`,
+          );
+        }
+        this._color = fallback;
       }
 
       const colorSet = palette[this._color];
@@ -925,7 +1038,7 @@
     }
 
     /**
-     * Set the device model: 'og' or 'x'
+     * Set the device model: 'og', 'x' or 'frame'
      * @param {string} model - The device frame to render
      */
     setModel(model) {
@@ -1004,6 +1117,8 @@
     }
   }
 
-  // Register the custom element using a hyphenated tag name
-  customElements.define("trmnl-frame", TRMNL);
+  // Turbo revisits re-evaluate this script; customElements.define throws on duplicates.
+  if (!customElements.get("trmnl-frame")) {
+    customElements.define("trmnl-frame", TRMNL);
+  }
 })();

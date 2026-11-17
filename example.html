@@ -84,10 +84,11 @@
                                 <select
                                     id="model-select"
                                     class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                                    onchange="document.getElementById('trmnl-1').setAttribute('model', this.value);"
+                                    onchange="trmnlSetModel(this.value);"
                                 >
                                     <option value="og" selected>TRMNL (OG)</option>
                                     <option value="x">TRMNL X</option>
+                                    <option value="frame">TRMNL Frame</option>
                                 </select>
                                 <svg
                                     class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
@@ -123,7 +124,26 @@
                                     <option value="black">Black</option>
                                     <option value="gray">Gray</option>
                                     <option value="wood">Wood</option>
+                                    <option value="white-oak" hidden>White Oak</option>
+                                    <option value="cherry" hidden>Cherry</option>
+                                    <option value="sapele" hidden>Sapele</option>
+                                    <option value="walnut" hidden>Walnut</option>
                                 </select>
+                                <script>
+                                    // The Frame comes in four woods; OG and X in the painted colours.
+                                    function trmnlSetModel(model) {
+                                        var frame = document.getElementById('trmnl-1');
+                                        var select = document.getElementById('color-select');
+                                        var woods = ['white-oak', 'cherry', 'sapele', 'walnut'];
+                                        var isFrame = model === 'frame';
+                                        [].forEach.call(select.options, function (o) {
+                                            o.hidden = isFrame ? woods.indexOf(o.value) < 0 : woods.indexOf(o.value) >= 0;
+                                        });
+                                        if (select.selectedOptions[0].hidden) select.value = isFrame ? 'white-oak' : 'white';
+                                        frame.setAttribute('model', model);
+                                        frame.setAttribute('color', select.value);
+                                    }
+                                </script>
                                 <svg
                                     class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
                                     viewBox="0 0 16 16"
@@ -318,6 +338,22 @@
                                             <code
                                                 class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
                                                 >wood</code
+                                            >; the Frame:
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >white-oak</code
+                                            >,
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >cherry</code
+                                            >,
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >sapele</code
+                                            >,
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >walnut</code
                                             >)
                                         </li>
                                         <li>
@@ -368,6 +404,10 @@
                                             <code
                                                 class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
                                                 >x</code
+                                            >,
+                                            <code
+                                                class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
+                                                >frame</code
                                             >). Default
                                             <code
                                                 class="font-mono text-gray-800 bg-gray-200 px-1 py-0.5 rounded"
