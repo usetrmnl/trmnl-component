@@ -13,8 +13,8 @@ TRMNL is a versatile custom web component that provides a stylish terminal-like 
 ## Features
 
 - **Multiple Content Sources**: Load content from external URLs or inject HTML directly
-- **Custom Color Themes**: Choose from white, black, sage, gray, and wood themes
-- **Multiple Device Frames**: Render the original TRMNL or the TRMNL X via the `model` attribute
+- **Custom Color Themes**: Choose from white, black, sage, gray, and wood themes; the TRMNL Frame comes in white-oak, cherry, sapele and walnut
+- **Multiple Device Frames**: Render the original TRMNL the TRMNL X or the TRMNL Frame via the `model` attribute
 - **Responsive Design**: Automatically adapts to its container size
 - **JavaScript API**: Programmatically control content and appearance
 - **CSS Scoping**: Content is isolated in an iframe for better style encapsulation
@@ -89,7 +89,7 @@ and must size their own markup (e.g. include plugins.css and use
 |-----------|-------------|---------|
 | `src` | URL to load in the iframe | - |
 | `color` | Color theme (white, black, sage, gray, wood; `mint` is a deprecated alias for `sage`) | `"white"` |
-| `model` | Device frame to render (`og`, `x`) | `"og"` |
+| `model` | Device frame to render (`og`, `x`, `frame`) | `"og"` |
 | `class` | CSS classes to apply to the component | - |
 | `style` | Inline styles to apply to the component | - |
 
@@ -101,7 +101,7 @@ and must size their own markup (e.g. include plugins.css and use
 | `clearContent()` | Clears all content from the component |
 | `setSrc(url)` | Sets the URL to load in the iframe |
 | `getHTML()` | Gets the current HTML content |
-| `setModel(model)` | Sets the device frame (`og` or `x`) |
+| `setModel(model)` | Sets the device frame (`og`, `x` or `frame`) |
 
 ## JavaScript Usage
 
